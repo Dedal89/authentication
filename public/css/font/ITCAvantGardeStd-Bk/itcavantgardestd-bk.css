@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'ITCAvantGardeGothicStdBook';
+    src: url('itcavantgardestd-bk.eot');
+    src: url('itcavantgardestd-bk.eot') format('embedded-opentype'),
+         url('itcavantgardestd-bk.woff') format('woff'),
+         url('itcavantgardestd-bk.ttf') format('truetype'),
+         url('itcavantgardestd-bk.svg#ITCAvantGardeGothicStdBook') format('svg');
+}

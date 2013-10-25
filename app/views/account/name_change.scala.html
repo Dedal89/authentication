@@ -1,0 +1,27 @@
+@(changeForm: Form[controllers.Account.NicknameChange])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("playauthenticate.change.name.title")) {
+
+<h1>@Messages("playauthenticate.change.name.title")</h1>
+<p>
+
+
+        @helper.form(action = routes.Account.doChangeNickname()) {
+
+            @if(changeForm.hasGlobalErrors) {
+                <p class="error">
+                    <span class="label label-important">@changeForm.globalError.message</span>
+                </p>
+            }
+            <fieldset>
+                @helper.inputText(changeForm("nickname"))
+
+            </fieldset>
+            <input type="submit" value="@Messages("playauthenticate.change.name.cta")" class="btn btn-primary">
+        }
+
+</p>
+}

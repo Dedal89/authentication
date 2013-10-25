@@ -1,0 +1,324 @@
+html {
+    height: 100%;
+}
+
+html, body {
+    background-color: #eee;
+    font-family: 'ITCAvantGardeGothicStdBook';
+}
+
+.brand{
+	top:300;
+	left:400;
+}
+
+input {
+	font-weight: bold;
+
+}
+
+@font-face {
+    font-family: 'ITCAvantGardeGothicStdBook';
+    src: url('font/ITCAvantGardeStd-Bk/itcavantgardestd-bk.eot');
+    src: url('font/ITCAvantGardeStd-Bk/itcavantgardestd-bk.eot') format('embedded-opentype'),
+         url('font/ITCAvantGardeStd-Bk/itcavantgardestd-bk.woff') format('woff'),
+         url('font/ITCAvantGardeStd-Bk/itcavantgardestd-bk.ttf') format('truetype'),
+         url('font/ITCAvantGardeStd-Bk/itcavantgardestd-bk.svg#ITCAvantGardeGothicStdBook') format('svg');
+}
+
+
+/* The white background content wrapper */
+.content {
+    background-color: #fff;
+    padding: 20px;
+	position: relative;
+    margin: 0 -90px; /* negative indent the amount of the padding to maintain the grid system */
+    margin-left: auto ;
+    margin-right: auto ;
+    min-height: 10px;
+}
+
+.backgroundimage-signup {
+	background-image:url('../images/signup-background.jpg');
+	background-repeat:no-repeat;
+	background-position:center;
+	margin-left: auto ;
+    margin-right: auto ;
+	position: relative;
+	height: 600px;
+	width: 800px;
+}
+
+.backgroundimage-login {
+	background-image:url('../images/login/background-login.png');
+	background-repeat:no-repeat;
+	background-position:center;
+	margin-left: auto ;
+    margin-right: auto ;
+	position: relative;
+	height: 600px;
+	width: 800px;
+}
+
+div#logo-container {
+	background-color: transparent;
+	background-image:url('../images/sketchness.png');
+	background-repeat:no-repeat;
+	position: relative;
+	left: 0px;
+	top : 0px;
+	width: 200px;
+	height:100px;
+}
+
+.div-right-form {
+	margin-left: 450px;
+	margin-top: 0px;
+}
+.div-left-form {
+	position: absolute;
+	margin-left: 0px;
+	margin-top:	0px;
+}
+
+.div-input-signup {
+	background-color: transparent;
+	background-repeat:no-repeat;
+	margin-left: 80px;
+	margin-top: 0px;
+	width: 350px;
+	height:100px;
+}
+
+.input input {
+    background: none repeat scroll 0 0 transparent;
+    border: medium none;
+    padding: 3px 5px;
+    margin-left: 80px;
+	margin-top: 30px;
+	font-family: 'ITCAvantGardeGothicStdBook';
+}
+
+.div-input-signup label{
+	display: none;
+}
+
+.div-terms{
+	background-color: transparent;
+	background-repeat:no-repeat;
+	background-image:url('../images/terms.png');
+	margin-top: 30px;
+	height: 50px;
+}
+
+
+.div-terms label{
+	display: none;
+}
+
+div#nickname-container {
+	background-image:url('../images/nickname.png');
+}
+
+div#email-container {
+	background-image:url('../images/email.png');
+}
+
+div#password-container {
+	background-image:url('../images/password.png');
+}
+
+div#repeated-password-container {
+	background-image:url('../images/retypeemail.png');
+}
+
+div#nation-container {
+	background-image:url('../images/nation.png');
+}
+
+
+/* hide costrains label */
+.help-block {
+  display:none;
+}
+
+.help-inline{
+	margin-left: 60px;
+	margin-top: 10px;
+	font-weight: bold;
+}
+
+#terms .help-inline {
+	margin-top: 50px;
+	margin-left:30px;
+}
+
+
+input[type="checkbox"] {
+	margin-left: 15px;
+	margin-top:10px;
+	border:1px solid red;
+	width:15px;
+    height:15px;
+    margin-left: 30px;
+    margin-top:15px;
+
+}
+
+#accept_terms{
+	margin-top:15px;
+	vertical-align: top;
+}
+
+input[type="checkbox"]:hover {
+    box-shadow:0px 0px 10px #FF0000;
+}
+
+input[type="radio"] {
+    /* hide the inputs */
+    opacity: 0;
+    display:none;
+}
+
+input[type="radio"] + label{
+    /* keep pointer so that you get the little hand showing when you are on a button */
+    cursor: pointer;
+    float: left;
+    height: 110px;
+    width: 110px;
+}
+
+
+input[type=radio]#gender_true + label{
+  background: url(../images/male1.png) center no-repeat;
+}
+
+input[type=radio]#gender_true:checked  + label {
+  background: url(../images/male-checked.png) center no-repeat;
+}
+
+input[type=radio]#gender_false + label{
+  background: url(../images/female1.png) center no-repeat;
+}
+
+input[type=radio]#gender_false:checked  + label {
+  background: url(../images/female-checked.png) center no-repeat;
+}
+
+
+input[type=submit]#submit-signup  {
+	background-color: transparent;
+	background: url('../images/register.png') center no-repeat ;
+ 	height: 90px;
+ 	width: 340px;
+ 	border: none;
+ 	margin-top:40px;
+}
+
+/* Login style */
+
+#login-form{
+	margin-top: 500px;
+	margin-left: 450px;
+	position:absolute;
+}
+
+/* Div username */
+.div-input-username-login{
+	position: absolute;
+	height:35px ;
+	width:130px;
+	background-image:url('../images/login/username-label-normal.png');
+}
+
+/* Hide Label div */
+.div-input-username-login label{
+	display: none;
+}
+
+/* Center input text username in background-image*/
+.div-input-username-login #email {
+	margin-left:5px;
+  	margin-top:8px;
+  	padding:3px 5px;
+  	width: 100px;
+}
+
+/* Div password */
+.div-input-password-login{
+	margin-left: 140px;
+	height:35px ;
+	width:130px;
+	background-image:url('../images/login/password-label-normal.png');
+}
+
+/* Hide Label div */
+.div-input-password-login label{
+	display: none;
+}
+
+/* Center input text password in background-image*/
+.div-input-password-login #password {
+	margin-left:5px;
+  	margin-top:8px;
+  	padding:3px 5px;
+  	width: 100px;
+}
+
+.play-as-guest-container{
+	position:absolute;
+	margin-left:470px;
+  	margin-top:10px;
+}
+
+.provider-container{
+	position: absolute;
+	margin-left: 350px;
+	margin-top: 500px
+}
+
+.register-container{
+	position: absolute;
+	margin-left: 10px;
+	margin-top: 350px
+}
+
+
+input[type=submit]#submit-login  {
+	position:absolute;
+	background-color: transparent;
+	background: url('../images/login/login-normal.png') center no-repeat ;
+ 	height: 80px;
+ 	width: 190px;
+ 	border: none;
+ 	margin-left: 10px;
+ 	margin-top: 430px;
+}
+
+#login-form .help-inline{
+	margin-left: 10px;
+ 	margin-top: 10px;
+}
+
+
+.providers{
+	list-style:none;
+	margin: 0;
+	width: 100px;
+	height: 50px;
+}
+
+div#provider-container ul li{
+	display: inline;
+}
+
+
+/* Hidden div containing preloaded images */
+div#preloaded-images {
+   position: absolute;
+   overflow: hidden;
+   left: -9999px;
+   top: -9999px;
+   height: 1px;
+   width: 1px;
+}

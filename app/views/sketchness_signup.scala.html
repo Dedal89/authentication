@@ -1,0 +1,113 @@
+@(signupForm: Form[_])
+
+@import helper._
+@import helper.twitterBootstrap._
+@import com.feth.play.module.pa.views.html._
+
+
+@main(Messages("Signup")) {
+
+@if(flash.containsKey("error")) {
+<div class="alert-message error">
+    <p>
+        <strong>Oops!</strong> @flash.get("error")
+    </p>
+</div>
+
+}
+
+<div class="backgroundimage-signup">
+    <div id="logo-container"></div>
+    <div id="signup-form">
+        @helper.form(routes.Signup.doSignup) {
+
+        @if(signupForm.hasGlobalErrors) {
+        <p class="error">
+            <span class="label label-important">@signupForm.globalError.message</span>
+        </p>
+        }
+        <div id="left-form" class="div-left-form">
+            <div id="nickname-container" class="div-input-signup">
+                @inputText(
+                signupForm("name"),
+                '_id -> "nickname-input",
+                'placeholder -> "Nickname"
+                )
+            </div>
+
+            <div id="email-container" class="div-input-signup">
+                @inputText(
+                signupForm("email"),
+                '_id -> "email-input",
+                'placeholder -> "Email"
+                )
+            </div>
+
+
+
+            <div id="password-container" class="div-input-signup">
+                @inputPassword(
+                signupForm("password"),
+                '_id -> "password-input",
+                'placeholder -> "Password"
+                )
+            </div>
+
+
+
+            <div id="repeated-password-container" class="div-input-signup">
+                @inputPassword(
+                signupForm("RepeatPassword"),
+                '_id -> "repeatPassword-input",
+                'placeholder -> "Repeat your Password"
+                )
+            </div>
+
+
+            <div id="nation-container" class="div-input-signup">
+                @inputText(
+                signupForm("nation"),
+                '_id -> "nation-input",
+                'placeholder -> "Nation"
+                )
+            </div>
+        </div>
+
+        <div id="right-form" class="div-right-form">
+            <div id="gender-container">
+                @inputRadioGroup(
+                signupForm("gender"),
+                options = options ("true" ->"", "false" ->"")
+                )
+            </div>
+
+            <div id="terms-container" class="div-terms">
+                @checkbox(
+                field = signupForm("accept_terms"),
+                '_id ->"terms"
+                )
+            </div>
+
+            <input type="submit" id="submit-signup" class="signup-submit" value="" >
+        </div>
+
+        }
+    </div>
+</div>
+
+<div id="preloaded-images">
+    <img src="../assets/images/signup-background.png" width="1" height="1"  />
+    <img src="../assets/images/email.png" width="1" height="1"  />
+    <img src="../assets/images/female1.png" width="1" height="1"  />
+    <img src="../assets/images/male1.png" width="1" height="1"  />
+    <img src="../assets/images/nation.png" width="1" height="1"  />
+    <img src="../assets/images/nickname.png" width="1" height="1"  />
+    <img src="../assets/images/password.png" width="1" height="1"  />
+    <img src="../assets/images/register.png" width="1" height="1"  />
+    <img src="../assets/images/retypeemail.png" width="1" height="1"  />
+    <img src="../assets/images/sketchness.png" width="1" height="1"  />
+    <img src="../assets/images/terms.png" width="1" height="1"  />
+</div>
+
+
+}
