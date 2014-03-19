@@ -16,9 +16,6 @@ import views.html.account.signup.*;
 import views.html.signup;
 
 import com.feth.play.module.pa.PlayAuthenticate;
-import views.html.sketchness_login;
-import views.html.sketchness_signup;
-import views.html.sketchness_signupGuest;
 
 import static play.data.Form.form;
 
@@ -55,7 +52,7 @@ public class Signup extends Controller {
 	}
 
     public static Result  signup(){
-        return ok(sketchness_signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
+        return ok(signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
     }
 
     public static Result doSignup() {
@@ -64,16 +61,11 @@ public class Signup extends Controller {
         if (filledForm.hasErrors()) {
             // User did not fill everything properly
             System.out.println(filledForm.toString());
-            return badRequest(sketchness_signup.render(filledForm));
+            return badRequest(signup.render(filledForm));
         } else {
             // Everything was filled
             return UsernamePasswordAuthProvider.handleSignup(ctx());
         }
-    }
-
-
-    public static Result doSignupGuest(){
-        return ok(sketchness_signupGuest.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
     }
 
 	private static final Form<MyIdentity> FORGOT_PASSWORD_FORM = form(MyIdentity.class);

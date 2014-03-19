@@ -31,14 +31,16 @@
           '_label -> Messages("playauthenticate.login.password.placeholder")
         )
           
-        <input type="submit" value="@Messages("playauthenticate.login.now")" class="btn btn-primary"><br/>
+        <input type="submit" value="Login" class="btn btn-primary"><br/>
+        <a class="btn btn-primary" href="@routes.Signup.signup">Register</a><br/>
         <br/>
         <a href="javascript:void(0);" onclick="window.location.href = jsRoutes.controllers.Signup.forgotPassword($('#email').val() || null).absoluteURL();">@Messages("playauthenticate.login.forgot.password")</a>
+
 
     	}
     </div>
 
-    <div class="span3">
+    <div>
       @Messages("playauthenticate.login.oauth")
       @* Display list of available providers *@
       @_providerPartial(skipCurrent=false)

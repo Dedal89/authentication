@@ -6,12 +6,10 @@
 
 
 GET     /                      controllers.Login.login
-GET     /login                 controllers.Login.login
 POST    /login                 controllers.Login.doLogin
 
 GET     /signup                controllers.Signup.signup
 POST    /signup                controllers.Signup.doSignup
-GET     /signupGuest           controllers.Signup.doSignupGuest
 
 GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted

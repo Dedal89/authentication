@@ -3,6 +3,12 @@
 
 # --- !Ups
 
+create table authToken (
+  user                      varchar(255),
+  provider                  varchar(255),
+  token                     varchar(255))
+;
+
 create table linked_account (
   id                        bigint not null,
   user_id                   bigint,
@@ -89,6 +95,8 @@ alter table users_user_permission add constraint fk_users_user_permission_user_0
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
+
+drop table if exists authToken;
 
 drop table if exists linked_account;
 

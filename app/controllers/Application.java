@@ -1,8 +1,10 @@
 package controllers;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import models.AuthToken;
 import models.User;
 import play.Routes;
 import play.data.Form;
@@ -42,7 +44,14 @@ public class Application extends Controller {
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result restricted() {
 		final User localUser = getLocalUser(session());
-		return ok(contenuto.render(localUser));
+
+        AuthToken auth = new AuthToken();
+        auth.updateStatus(localUser.getIdentifier(),session().get("oauthaccessProvider"), session().get("oauthaccessToken"));
+        response().setCookie("token", session().get("oauthaccessToken"));
+
+    //TODO passare i parametri assieme alla redirect
+
+        return redirect("http://www.google.com");
 	}
 
 	@Restrict(@Group(Application.USER_ROLE))

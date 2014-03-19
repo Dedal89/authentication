@@ -7,12 +7,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
-import views.html.sketchness_login;
+import views.html.login;
 
 public class Login extends Controller {
 
     public static Result login() {
-        return ok(sketchness_login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
+        return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
 
     }
 
@@ -23,7 +23,7 @@ public class Login extends Controller {
                 .bindFromRequest();
         if (filledForm.hasErrors()) {
             // User did not fill everything properly
-            return badRequest(sketchness_login.render(filledForm));
+            return badRequest(login.render(filledForm));
         }
         else {
             // Everything was filled

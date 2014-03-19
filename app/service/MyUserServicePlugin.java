@@ -1,12 +1,18 @@
 package service;
 
+import com.feth.play.module.pa.providers.oauth1.OAuth1AuthUser;
+import com.feth.play.module.pa.providers.oauth2.OAuth2AuthUser;
 import com.feth.play.module.pa.user.EmailIdentity;
 import models.User;
+import org.omg.CORBA.NameValuePair;
 import play.Application;
 
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.service.UserServicePlugin;
+import play.mvc.Http;
+
+import java.util.List;
 
 public class MyUserServicePlugin extends UserServicePlugin {
 
@@ -67,10 +73,29 @@ public class MyUserServicePlugin extends UserServicePlugin {
 		User.addLinkedAccount(oldUser, newUser);
 		return newUser;
 	}
-	
+
 	@Override
 	public AuthUser update(final AuthUser knownUser) {
 		// User logged in again, bump last login date
+
+        if (knownUser instanceof OAuth2AuthUser)
+        {
+            OAuth2AuthUser oAuth2AuthUser = (OAuth2AuthUser) knownUser;
+            String oauth2accessToken = oAuth2AuthUser.getOAuth2AuthInfo().getAccessToken();
+            String oauth2accessProvider = oAuth2AuthUser.getProvider();
+            Http.Context.current().session().put("oauthaccessToken", oauth2accessToken);
+            Http.Context.current().session().put("oauthaccessProvider", oauth2accessProvider);
+        }
+
+        if (knownUser instanceof OAuth1AuthUser)
+        {
+            OAuth1AuthUser oAuth1AuthUser = (OAuth1AuthUser) knownUser;
+            String oauth1accessToken = oAuth1AuthUser.getOAuth1AuthInfo().getAccessToken();
+            String oauth1accessProvider = oAuth1AuthUser.getProvider();
+            Http.Context.current().session().put("oauthaccessToken", oauth1accessToken);
+            Http.Context.current().session().put("oauthaccessProvider", oauth1accessProvider);
+        }
+
 		User.setLastLoginDate(knownUser);
 		return knownUser;
 	}
