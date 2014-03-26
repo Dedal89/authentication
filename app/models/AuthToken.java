@@ -46,7 +46,7 @@ public class AuthToken extends Model {
 
 
             if (rs.isBeforeFirst()) {
-                Logger.info("User " + user+"with provider: "+ provider+" exists");
+                Logger.info("User " + user+" with provider: "+ provider+" exists");
                 final String query2 = "UPDATE AUTHTOKEN SET TOKEN=? WHERE USER=? AND PROVIDER=? ";
                 statement1 = connection.prepareStatement(query2);
                 statement1.setString(1, token);

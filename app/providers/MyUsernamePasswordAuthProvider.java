@@ -103,11 +103,19 @@ public class MyUsernamePasswordAuthProvider
         public String nation;
 
         @Required
-        public boolean gender;
+        public String city;
 
         @Required
-        @AssertTrue
-        public boolean accept_terms;
+        public String companyName;
+
+        @Required
+        public String businessDimension;
+
+        @Required
+        public String mainInterests;
+
+        public boolean accessibility;
+
 
 		public String validate() {
 			if (password == null || !password.equals(repeatPassword)) {
@@ -148,20 +156,18 @@ public class MyUsernamePasswordAuthProvider
 		}
 		// The user either does not exist or is inactive - create a new one
 
-		final User newUser = User.create(user);
+		User.create(user);
 		// Usually the email should be verified before allowing login, however
 		// if you return
 		// return SignupResult.USER_CREATED;
 		// then the user gets logged in directly
-        String tmp = newUser.name;
-        tmp = tmp.substring(0,5);
 
-        if(tmp.equals("Guest")){
-            return SignupResult.USER_CREATED;
-        }
-        else{
-		    return SignupResult.USER_CREATED_UNVERIFIED;
-        }
+        //TODO after test remove this line and uncomment next
+        Logger.debug("remove this line after tests app/providers/MyUsernamePasswordAuthProvider.java: 162");
+        return SignupResult.USER_CREATED;
+
+		 //   return SignupResult.USER_CREATED_UNVERIFIED;
+
 	}
 
 	@Override

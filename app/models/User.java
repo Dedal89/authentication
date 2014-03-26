@@ -15,6 +15,7 @@ import com.feth.play.module.pa.user.FirstLastNameIdentity;
 import controllers.Application;
 import controllers.Signup;
 import models.TokenAction.Type;
+import play.Logger;
 import play.data.format.Formats;
 import play.db.ebean.Model;
 import play.i18n.Messages;
@@ -55,13 +56,19 @@ public class User extends Model implements Subject {
 
 	public String name;
 
+    public String companyName;
+    public String mainInterests;
+    public String businessDimension;
+    public String city;
+
+    public boolean accessibility;
+
 	public String firstName;
 
 	public String lastName;
 
 
     public String nation;
-    public boolean gender;
 
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -205,20 +212,17 @@ public class User extends Model implements Subject {
             user.name = identity.getName();
 
 
-            String old = user.name;
 
-            user.name = user.checkNickname(old);
-
-
-
-            user.gender = identity.getGender();
             user.nation = identity.getNation();
+            user.companyName = identity.getCompanyName();
+            user.businessDimension = identity.getBusinessDimension();
+            user.mainInterests = identity.getMainInterests();
+            user.city = identity.getCity();
+            user.accessibility = identity.getAccessibility();
 
-            if(old.equals("Guest")){
 
-                user.emailValidated = true;
-
-            }
+            Logger.debug("remove this line after tests app/models/User.java: 213");
+            user.emailValidated = true;
         }
 
 

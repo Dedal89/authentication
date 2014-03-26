@@ -82,18 +82,14 @@ public class MyUserServicePlugin extends UserServicePlugin {
         {
             OAuth2AuthUser oAuth2AuthUser = (OAuth2AuthUser) knownUser;
             String oauth2accessToken = oAuth2AuthUser.getOAuth2AuthInfo().getAccessToken();
-            String oauth2accessProvider = oAuth2AuthUser.getProvider();
             Http.Context.current().session().put("oauthaccessToken", oauth2accessToken);
-            Http.Context.current().session().put("oauthaccessProvider", oauth2accessProvider);
         }
 
         if (knownUser instanceof OAuth1AuthUser)
         {
             OAuth1AuthUser oAuth1AuthUser = (OAuth1AuthUser) knownUser;
             String oauth1accessToken = oAuth1AuthUser.getOAuth1AuthInfo().getAccessToken();
-            String oauth1accessProvider = oAuth1AuthUser.getProvider();
             Http.Context.current().session().put("oauthaccessToken", oauth1accessToken);
-            Http.Context.current().session().put("oauthaccessProvider", oauth1accessProvider);
         }
 
 		User.setLastLoginDate(knownUser);

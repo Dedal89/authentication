@@ -4,6 +4,7 @@ import providers.MyUsernamePasswordAuthProvider.MySignup;
 
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
 import com.feth.play.module.pa.user.NameIdentity;
+import views.html.main;
 
 public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
 		implements NameIdentity {
@@ -14,14 +15,22 @@ public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
 	private static final long serialVersionUID = 1L;
 	private final String name;
     private String nation;
-    private Boolean gender;
+    private String companyName;
+    private String mainInterests;
+    private String businessDimension;
+    private String city;
+    private boolean accessibility;
 
 
 	public MyUsernamePasswordAuthUser(final MySignup signup) {
 		super(signup.password, signup.email);
 		this.name = signup.name;
         this.nation = signup.nation;
-        this.gender = signup.gender;
+        this.companyName = signup.companyName;
+        this.mainInterests = signup.mainInterests;
+        this.businessDimension = signup.businessDimension;
+        this.city = signup.city;
+        this.accessibility = signup.accessibility;
 	}
 
 	/**
@@ -43,9 +52,24 @@ public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
         return nation;
     }
 
-    public Boolean getGender() {
-        return gender;
+    public String getCompanyName() {
+        return companyName;
     }
 
+    public String getMainInterests() {
+        return mainInterests;
+    }
+
+    public String getBusinessDimension() {
+        return businessDimension;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public boolean getAccessibility() {
+        return accessibility;
+    }
 
 }

@@ -12,6 +12,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 
 import models.AuthToken;
 import models.User;
+import net.minidev.json.JSONObject;
 import play.Logger;
 import play.Routes;
 import play.data.Form;
@@ -53,13 +54,19 @@ public class Application extends Controller {
 		final User localUser = getLocalUser(session());
 
         AuthToken auth = new AuthToken();
-        auth.updateStatus(localUser.getIdentifier(),session().get("oauthaccessProvider"), session().get("oauthaccessToken"));
+        auth.updateStatus(localUser.getIdentifier(),session().get("pa.p.id"), session().get("oauthaccessToken"));
 
      //   response().setCookie("token", session().get("oauthaccessToken"));
 
-    //TODO passare i parametri assieme alla redirect
+        JSONObject content = new JSONObject();
+        content.put("userid", localUser.getIdentifier());
+        content.put("username", localUser.name);
+        content.put("provider", session().get("pa.p.id"));
+        content.put("token", session().get("oauthaccessToken"));
 
-        Payload userToken = new Payload(session().get("oauthaccessToken"));
+        String payload = content.toJSONString();
+
+        Payload userToken = new Payload(payload);
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
         header.setContentType("text/plain");
         JWSObject jwsObject = new JWSObject(header, userToken);
@@ -74,17 +81,16 @@ public class Application extends Controller {
         String serializedObj = jwsObject.serialize();
         Logger.info("Serialised JWS object: " + serializedObj);
 
-
-        //   Code to parse, verify and read the payload
+        //   Code to parse, verify and read the payload, use as example
         try{
             jwsObject = JWSObject.parse(serializedObj);
             JWSVerifier verifier = new MACVerifier(sharedKey.getBytes());
             boolean verifiedSignature = jwsObject.verify(verifier);
             if (verifiedSignature){
-                Logger.info("Verified JWS signature!");
+                Logger.info("Verified JWS signature");
             }
             else{
-                Logger.info("Bad JWS signature!");
+                Logger.info("Bad JWS signature");
             }
             Logger.info("Recovered payload message: " + jwsObject.getPayload());
         }
@@ -94,9 +100,6 @@ public class Application extends Controller {
         catch (JOSEException e){
             Logger.error("Error in verifying jwsObject");
         }
-
-        Logger.info("token is: "+ session().get("oauthaccessToken"));
-
 
         return redirect("http://www.prova.com/?token="+serializedObj);
 	}

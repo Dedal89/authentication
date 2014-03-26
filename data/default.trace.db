@@ -221,3 +221,6 @@ INSERT INTO AUTHTOKEN (USER, PROVIDER, TOKEN) VALUES (1,facebook,jhbjhb) [42122-
 03-26 10:55:12 jdbc[2]: exception
 org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO AUTHTOKEN (ID, USER, PROVIDER, TOKEN) VALUES (,[*]1,2,3)"; expected "), DEFAULT, NOT, EXISTS, SELECT, FROM"; SQL statement:
 INSERT INTO AUTHTOKEN (ID, USER, PROVIDER, TOKEN) VALUES (,1,2,3) [42001-168]
+03-26 15:32:50 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USERS[*] SELECT * FROM USERS"; expected "UPDATE, {"; SQL statement:
+USERS SELECT * FROM USERS [42001-168]
