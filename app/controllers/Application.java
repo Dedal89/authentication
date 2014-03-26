@@ -1,11 +1,18 @@
 package controllers;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+
+
 import models.AuthToken;
 import models.User;
+import play.Logger;
 import play.Routes;
 import play.data.Form;
 import play.mvc.*;
@@ -47,11 +54,51 @@ public class Application extends Controller {
 
         AuthToken auth = new AuthToken();
         auth.updateStatus(localUser.getIdentifier(),session().get("oauthaccessProvider"), session().get("oauthaccessToken"));
-        response().setCookie("token", session().get("oauthaccessToken"));
+
+     //   response().setCookie("token", session().get("oauthaccessToken"));
 
     //TODO passare i parametri assieme alla redirect
 
-        return redirect("http://www.google.com");
+        Payload userToken = new Payload(session().get("oauthaccessToken"));
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
+        header.setContentType("text/plain");
+        JWSObject jwsObject = new JWSObject(header, userToken);
+        String sharedKey = "a0a2abd8-6162-41c3-83d6-1cf559b46afc";
+        JWSSigner signer = new MACSigner(sharedKey.getBytes());
+        try{
+            jwsObject.sign(signer);
+        }
+        catch(Exception e){
+            Logger.error("Error signing jwsObject");
+        }
+        String serializedObj = jwsObject.serialize();
+        Logger.info("Serialised JWS object: " + serializedObj);
+
+
+        //   Code to parse, verify and read the payload
+        try{
+            jwsObject = JWSObject.parse(serializedObj);
+            JWSVerifier verifier = new MACVerifier(sharedKey.getBytes());
+            boolean verifiedSignature = jwsObject.verify(verifier);
+            if (verifiedSignature){
+                Logger.info("Verified JWS signature!");
+            }
+            else{
+                Logger.info("Bad JWS signature!");
+            }
+            Logger.info("Recovered payload message: " + jwsObject.getPayload());
+        }
+        catch(ParseException e){
+            Logger.error("Error in parsing jwsObject");
+        }
+        catch (JOSEException e){
+            Logger.error("Error in verifying jwsObject");
+        }
+
+        Logger.info("token is: "+ session().get("oauthaccessToken"));
+
+
+        return redirect("http://www.prova.com/?token="+serializedObj);
 	}
 
 	@Restrict(@Group(Application.USER_ROLE))
