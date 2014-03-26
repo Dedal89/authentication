@@ -197,3 +197,27 @@ SELECT * FROM AUTHTOKEN WHERE USER=? AND PROVIDER=?  [42102-168]
 03-19 16:10:00 jdbc[9]: exception
 org.h2.jdbc.JdbcSQLException: Table "AUTHTOKEN" not found; SQL statement:
 SELECT * FROM AUTHTOKEN WHERE USER=? AND PROVIDER=?  [42102-168]
+03-26 10:54:46 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "FACEBOOK" not found; SQL statement:
+INSERT INTO AUTHTOKEN (USER, PROVIDER, TOKEN) VALUES (1,facebook,jhbjhb) [42122-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:138)
+	at org.h2.command.dml.Insert.prepare(Insert.java:231)
+	at org.h2.command.Parser.prepareCommand(Parser.java:218)
+	at org.h2.engine.Session.prepareLocal(Session.java:415)
+	at org.h2.engine.Session.prepareCommand(Session.java:364)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1109)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:164)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:152)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1311)
+	at org.h2.server.web.WebApp.query(WebApp.java:1001)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:964)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Thread.java:744)
+03-26 10:55:12 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO AUTHTOKEN (ID, USER, PROVIDER, TOKEN) VALUES (,[*]1,2,3)"; expected "), DEFAULT, NOT, EXISTS, SELECT, FROM"; SQL statement:
+INSERT INTO AUTHTOKEN (ID, USER, PROVIDER, TOKEN) VALUES (,1,2,3) [42001-168]

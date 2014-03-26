@@ -4,9 +4,11 @@
 # --- !Ups
 
 create table authToken (
+  id                        bigint not null,
   user                      varchar(255),
   provider                  varchar(255),
-  token                     varchar(255))
+  token                     varchar(255),
+  constraint pk_authToken primary key (id))
 ;
 
 create table linked_account (
@@ -67,6 +69,8 @@ create table users_user_permission (
   user_permission_id             bigint not null,
   constraint pk_users_user_permission primary key (users_id, user_permission_id))
 ;
+create sequence authToken_seq;
+
 create sequence linked_account_seq;
 
 create sequence security_role_seq;
@@ -113,6 +117,8 @@ drop table if exists users_user_permission;
 drop table if exists user_permission;
 
 SET REFERENTIAL_INTEGRITY TRUE;
+
+drop sequence if exists authToken_seq;
 
 drop sequence if exists linked_account_seq;
 
