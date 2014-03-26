@@ -15,6 +15,7 @@ import com.feth.play.module.pa.user.FirstLastNameIdentity;
 import controllers.Application;
 import controllers.Signup;
 import models.TokenAction.Type;
+import net.minidev.json.JSONObject;
 import play.Logger;
 import play.data.format.Formats;
 import play.db.ebean.Model;
@@ -232,6 +233,57 @@ public class User extends Model implements Subject {
 		// user.saveManyToManyAssociations("permissions");
 		return user;
 	}
+
+    public String retrieveUser(String id){
+        String result = null;
+        JSONObject content = new JSONObject();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
+        try{
+            connection = DB.getConnection();
+            final String query = "SELECT * FROM USERs WHERE ID=?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, id);
+            rs = statement.executeQuery();
+            if(rs.isBeforeFirst()){
+                rs.next();
+                content.put("id",id);
+                content.put("email",rs.getString("email"));
+                content.put("name",rs.getString("name"));
+                content.put("companyName",rs.getString("company_name"));
+                content.put("mainInterests",rs.getString("main_interests"));
+                content.put("businessDimensions",rs.getString("business_dimension"));
+                content.put("city",rs.getString("city"));
+                content.put("accessibility",rs.getBoolean("accessibility"));
+                content.put("firstname",rs.getString("first_name"));
+                content.put("lastname",rs.getString("last_name"));
+                content.put("country",rs.getString("nation"));
+            }
+            else{
+                content.put("error","there is no user with id: "+id);
+            }
+        }
+        catch(Exception e){
+            Logger.error("Error during connection for retrieving user "+id+" data.");
+        }
+        finally {
+            try {
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                play.Logger.error("Unable to close a SQL connection.");
+            }
+
+        }
+
+        result = content.toJSONString();
+        return result;
+    }
 
     public String checkNickname(String nickname){
 

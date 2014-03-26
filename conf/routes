@@ -13,6 +13,9 @@ POST    /signup                controllers.Signup.doSignup
 
 GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted
+
+GET     /retrieveuser/:token                controllers.Application.retrieveUser(token: String)
+
 GET     /assets/javascript/routes.js    controllers.Application.jsRoutes
 
 GET     /profile                    controllers.Application.profile

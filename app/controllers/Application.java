@@ -10,10 +10,14 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 
 
+import com.nimbusds.jose.crypto.RSAEncrypter;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import models.AuthToken;
 import models.User;
 import net.minidev.json.JSONObject;
 import play.Logger;
+import play.Play;
 import play.Routes;
 import play.data.Form;
 import play.mvc.*;
@@ -37,6 +41,10 @@ public class Application extends Controller {
 	public static final String FLASH_MESSAGE_KEY = "message";
 	public static final String FLASH_ERROR_KEY = "error";
 	public static final String USER_ROLE = "user";
+    private final static String sharedKey = Play.application().configuration()
+            .getString("sharedKey");
+    private final static String redirectUrl = Play.application().configuration()
+            .getString("redirectUrl");
 	
 	public static Result index() {
 		return ok(index.render());
@@ -56,8 +64,6 @@ public class Application extends Controller {
         AuthToken auth = new AuthToken();
         auth.updateStatus(localUser.getIdentifier(),session().get("pa.p.id"), session().get("oauthaccessToken"));
 
-     //   response().setCookie("token", session().get("oauthaccessToken"));
-
         JSONObject content = new JSONObject();
         content.put("userid", localUser.getIdentifier());
         content.put("username", localUser.name);
@@ -65,12 +71,10 @@ public class Application extends Controller {
         content.put("token", session().get("oauthaccessToken"));
 
         String payload = content.toJSONString();
-
         Payload userToken = new Payload(payload);
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
         header.setContentType("text/plain");
         JWSObject jwsObject = new JWSObject(header, userToken);
-        String sharedKey = "a0a2abd8-6162-41c3-83d6-1cf559b46afc";
         JWSSigner signer = new MACSigner(sharedKey.getBytes());
         try{
             jwsObject.sign(signer);
@@ -81,7 +85,8 @@ public class Application extends Controller {
         String serializedObj = jwsObject.serialize();
         Logger.info("Serialised JWS object: " + serializedObj);
 
-        //   Code to parse, verify and read the payload, use as example
+    /*
+        //   Code to parse, verify and read the payload, use as example, this is how to access the string
         try{
             jwsObject = JWSObject.parse(serializedObj);
             JWSVerifier verifier = new MACVerifier(sharedKey.getBytes());
@@ -89,10 +94,10 @@ public class Application extends Controller {
             if (verifiedSignature){
                 Logger.info("Verified JWS signature");
             }
-            else{
+           else{
                 Logger.info("Bad JWS signature");
             }
-            Logger.info("Recovered payload message: " + jwsObject.getPayload());
+           Logger.info("Recovered payload message: " + jwsObject.getPayload());
         }
         catch(ParseException e){
             Logger.error("Error in parsing jwsObject");
@@ -100,9 +105,54 @@ public class Application extends Controller {
         catch (JOSEException e){
             Logger.error("Error in verifying jwsObject");
         }
-
-        return redirect("http://www.prova.com/?token="+serializedObj);
+*/
+        return redirect(redirectUrl+"/?token="+serializedObj);
 	}
+
+    public static Result retrieveUser(String token){
+/*
+        //this is how to sign the userId before sending it to the application
+
+        Payload userToken = new Payload(id);
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
+        header.setContentType("text/plain");
+        JWSObject jwsObject = new JWSObject(header, userToken);
+        JWSSigner signer = new MACSigner(sharedKey.getBytes());
+        try{
+            jwsObject.sign(signer);
+        }
+        catch(Exception e){
+            Logger.error("Error signing jwsObject");
+        }
+        String serializedObj = jwsObject.serialize();
+        Logger.info("Serialised JWS object: " + serializedObj);
+
+*/
+        String result = "error";
+        try{
+            JWSObject jwsObject = JWSObject.parse(token);
+            JWSVerifier verifier = new MACVerifier(sharedKey.getBytes());
+            boolean verifiedSignature = jwsObject.verify(verifier);
+            if (verifiedSignature){
+                Logger.info("Verified JWS signature");
+                Logger.info("Recovered payload message: " + jwsObject.getPayload());
+                User user = new User();
+                result = user.retrieveUser(jwsObject.getPayload().toString());
+            }
+            else{
+                Logger.info("Bad JWS signature");
+                Logger.info("Recovered payload message: " + jwsObject.getPayload()+" ERRORE");
+                result="bad signature";
+            }
+        }
+        catch(ParseException e){
+            Logger.error("Error in parsing jwsObject");
+        }
+        catch (JOSEException e){
+            Logger.error("Error in verifying jwsObject");
+        }
+        return ok(result);
+    }
 
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result profile() {

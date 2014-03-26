@@ -88,12 +88,14 @@ public class AuthToken extends Model {
 
         } catch (final SQLException ex) {
             Logger.error("Unable to save values for: " + user+" provider: "+ provider);
-           // throw new Exception("Unable to change nickname for user: " + user);
         } finally {
             try {
                 if (statement != null)
                     statement.close();
-
+                if (statement1 != null)
+                    statement1.close();
+                if (statement3 != null)
+                    statement3.close();
                 if (connection != null)
                     connection.close();
             } catch (final SQLException e) {
