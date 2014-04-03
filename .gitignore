@@ -13,3 +13,7 @@ dist
 .idea_modules
 bin
 RUNNING_PID
+
+files/privateKey.txt
+
+files/publicKey.txt

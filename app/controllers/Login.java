@@ -2,6 +2,7 @@ package controllers;
 
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider;
 
+import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -12,6 +13,8 @@ import views.html.login;
 public class Login extends Controller {
 
     public static Result login() {
+        String token = session().get("token");
+        Logger.info(token);
         return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
 
     }

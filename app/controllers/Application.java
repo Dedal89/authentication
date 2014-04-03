@@ -1,19 +1,10 @@
 package controllers;
 
-import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-
-
-import com.nimbusds.jose.crypto.RSAEncrypter;
-import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.JWTClaimsSet;
 import models.AuthToken;
+import models.SecurityInfoShare;
 import models.User;
 import net.minidev.json.JSONObject;
 import play.Logger;
@@ -21,7 +12,6 @@ import play.Play;
 import play.Routes;
 import play.data.Form;
 import play.mvc.*;
-import play.mvc.Http.Response;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
@@ -41,8 +31,6 @@ public class Application extends Controller {
 	public static final String FLASH_MESSAGE_KEY = "message";
 	public static final String FLASH_ERROR_KEY = "error";
 	public static final String USER_ROLE = "user";
-    private final static String sharedKey = Play.application().configuration()
-            .getString("sharedKey");
     private final static String redirectUrl = Play.application().configuration()
             .getString("redirectUrl");
 	
@@ -60,7 +48,6 @@ public class Application extends Controller {
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result restricted() {
 		final User localUser = getLocalUser(session());
-
         AuthToken auth = new AuthToken();
         auth.updateStatus(localUser.getIdentifier(),session().get("pa.p.id"), session().get("oauthaccessToken"));
 
@@ -69,88 +56,52 @@ public class Application extends Controller {
         content.put("username", localUser.name);
         content.put("provider", session().get("pa.p.id"));
         content.put("token", session().get("oauthaccessToken"));
-
         String payload = content.toJSONString();
-        Payload userToken = new Payload(payload);
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
-        header.setContentType("text/plain");
-        JWSObject jwsObject = new JWSObject(header, userToken);
-        JWSSigner signer = new MACSigner(sharedKey.getBytes());
-        try{
-            jwsObject.sign(signer);
-        }
-        catch(Exception e){
-            Logger.error("Error signing jwsObject");
-        }
-        String serializedObj = jwsObject.serialize();
-        Logger.info("Serialised JWS object: " + serializedObj);
 
-    /*
-        //   Code to parse, verify and read the payload, use as example, this is how to access the string
-        try{
-            jwsObject = JWSObject.parse(serializedObj);
-            JWSVerifier verifier = new MACVerifier(sharedKey.getBytes());
-            boolean verifiedSignature = jwsObject.verify(verifier);
-            if (verifiedSignature){
-                Logger.info("Verified JWS signature");
-            }
-           else{
-                Logger.info("Bad JWS signature");
-            }
-           Logger.info("Recovered payload message: " + jwsObject.getPayload());
-        }
-        catch(ParseException e){
-            Logger.error("Error in parsing jwsObject");
-        }
-        catch (JOSEException e){
-            Logger.error("Error in verifying jwsObject");
-        }
-*/
-        return redirect(redirectUrl+"/?token="+serializedObj);
+        SecurityInfoShare sis = new SecurityInfoShare();
+        sis.loadKey();
+        String result = sis.encrypt(payload);
+
+        session().put("token", result);
+
+        return redirect(redirectUrl);
+
 	}
 
     public static Result retrieveUser(String token){
-/*
-        //this is how to sign the userId before sending it to the application
 
-        Payload userToken = new Payload(id);
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
-        header.setContentType("text/plain");
-        JWSObject jwsObject = new JWSObject(header, userToken);
-        JWSSigner signer = new MACSigner(sharedKey.getBytes());
-        try{
-            jwsObject.sign(signer);
-        }
-        catch(Exception e){
-            Logger.error("Error signing jwsObject");
-        }
-        String serializedObj = jwsObject.serialize();
-        Logger.info("Serialised JWS object: " + serializedObj);
+        SecurityInfoShare sis = new SecurityInfoShare();
 
-*/
-        String result = "error";
-        try{
-            JWSObject jwsObject = JWSObject.parse(token);
-            JWSVerifier verifier = new MACVerifier(sharedKey.getBytes());
-            boolean verifiedSignature = jwsObject.verify(verifier);
-            if (verifiedSignature){
-                Logger.info("Verified JWS signature");
-                Logger.info("Recovered payload message: " + jwsObject.getPayload());
-                User user = new User();
-                result = user.retrieveUser(jwsObject.getPayload().toString());
-            }
-            else{
-                Logger.info("Bad JWS signature");
-                Logger.info("Recovered payload message: " + jwsObject.getPayload()+" ERRORE");
-                result="bad signature";
-            }
-        }
-        catch(ParseException e){
-            Logger.error("Error in parsing jwsObject");
-        }
-        catch (JOSEException e){
-            Logger.error("Error in verifying jwsObject");
-        }
+        sis.loadKey();
+     //   String result = sis.getPublicKey();
+     //   String publicKey = request().body().asText();
+     //   sis.setSpecificPublicKey(publicKey);
+
+        User user = new User();
+        String userdata = user.retrieveUser(token);
+        String result = sis.encrypt(userdata);
+
+      //  result = test(result);
+
+
+        return ok(result);
+    }
+
+    public static String test(String text){
+        SecurityInfoShare sis = new SecurityInfoShare();
+        sis.loadKey();
+        Logger.info("before >>>>>>>>> "+text);
+        String result = sis.decrypt(text);
+        Logger.info("after >>>>>>>>>> "+result);
+        return result;
+    }
+
+    public static Result test2(){
+        String result;
+        String token = session().get("token");
+        SecurityInfoShare sis = new SecurityInfoShare();
+        sis.loadKey();
+        result = sis.decrypt(token);
         return ok(result);
     }
 
@@ -160,7 +111,15 @@ public class Application extends Controller {
 		return ok(profile.render(localUser));
 	}
 
+    public static Result forceKeyCreation() {
+        SecurityInfoShare sis = new SecurityInfoShare();
+        sis.createKey();
+        return ok();
+    }
+
 	public static Result login() {
+        String token = session().get("token");
+        Logger.info(token);
 		return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
 	}
 

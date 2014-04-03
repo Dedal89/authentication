@@ -346,3 +346,6 @@ SELECT * FROM USERs WHERE ID=? [22018-168]
 03-26 17:49:28 jdbc[9]: exception
 org.h2.jdbc.JdbcSQLException: Data conversion error converting "eyJhbGciOiJIUzI1NiIsImN0eSI6InRleHRcL3BsYWluIn0.MQ.XW8vbtoz5nEU3buRIquYT8ZAjNEKlW_GvLYVQxNXk2I"; SQL statement:
 SELECT * FROM USERs WHERE ID=? [22018-168]
+04-03 15:19:03 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLException: Data conversion error converting "a"; SQL statement:
+SELECT * FROM USERs WHERE ID=? [22018-168]
