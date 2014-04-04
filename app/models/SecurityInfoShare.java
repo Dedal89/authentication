@@ -20,7 +20,7 @@ public class SecurityInfoShare extends Model {
     private PrivateKey privateKey;
     private String algorithm = "RSA";
 
-    public void createKey(){
+    public boolean createKey(){
         try{
             String saveKey = null;
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
@@ -54,17 +54,19 @@ public class SecurityInfoShare extends Model {
         }
         catch(Exception e){
             Logger.error("Error in creating keys");
+            return false;
         }
+        return true;
     }
 
-    public void loadKey(){
+    public boolean loadKey(){
         int value =0;
         String key= new String();
         try{
             File file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/publicKey.txt");
             if (!file.exists()) {
                 Logger.error("publicKey file dosn't exists");
-                return;
+                return false;
             }
             FileReader fr = new FileReader(file.getAbsoluteFile());
             BufferedReader br = new BufferedReader(fr);
@@ -82,7 +84,7 @@ public class SecurityInfoShare extends Model {
             file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/privateKey.txt");
             if (!file.exists()) {
                 Logger.error("publicKey file dosn't exists");
-                return;
+                return false;
             }
             fr = new FileReader(file.getAbsoluteFile());
             br = new BufferedReader(fr);
@@ -98,15 +100,18 @@ public class SecurityInfoShare extends Model {
         catch(Exception e){
             Logger.error("Error in retrieving keys");
         }
+        return true;
     }
 
-    public void setSpecificPublicKey(String key){
+    public boolean setSpecificPublicKey(String key){
         try{
         this.publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key.getBytes("ISO-8859-1")));
         }
         catch(Exception e){
             Logger.error("Error during setting specific public key");
+            return false;
         }
+        return true;
     }
 
     public String getPublicKey(){
@@ -116,6 +121,7 @@ public class SecurityInfoShare extends Model {
         }
         catch(Exception e){
             Logger.error("Error in getting public key");
+            return "no key available";
         }
         return result;
     }
@@ -130,6 +136,7 @@ public class SecurityInfoShare extends Model {
             result =new String(cipherText, "ISO-8859-1");
         } catch (Exception e) {
             Logger.error("Error in encrypting message");
+            return "error in encryption";
         }
         return result;
     }
@@ -143,6 +150,7 @@ public class SecurityInfoShare extends Model {
             text =new String(decrypted, "ISO-8859-1");
         } catch (Exception e) {
             Logger.error("Error in decrypting message");
+            return "error in decryption";
         }
         return text;
     }

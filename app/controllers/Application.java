@@ -72,27 +72,31 @@ public class Application extends Controller {
 
         SecurityInfoShare sis = new SecurityInfoShare();
 
-        sis.loadKey();
+        boolean success = sis.loadKey();
      //   String result = sis.getPublicKey();
      //   String publicKey = request().body().asText();
      //   sis.setSpecificPublicKey(publicKey);
-
-        User user = new User();
-        String userdata = user.retrieveUser(token);
-        String result = sis.encrypt(userdata);
-
-      //  result = test(result);
-
-
+        if(success){
+            User user = new User();
+            String userdata = user.retrieveUser(token);
+            String result = sis.encrypt(userdata);
+          //  result = test(result);
         return ok(result);
+        }
+        else{
+            return internalServerError();
+        }
     }
 
     public static String test(String text){
         SecurityInfoShare sis = new SecurityInfoShare();
-        sis.loadKey();
-        Logger.info("before >>>>>>>>> "+text);
-        String result = sis.decrypt(text);
-        Logger.info("after >>>>>>>>>> "+result);
+        String result= "error in loading key";
+        boolean success = sis.loadKey();
+        if(success){
+            Logger.info("before >>>>>>>>> "+text);
+            result = sis.decrypt(text);
+            Logger.info("after >>>>>>>>>> "+result);
+        }
         return result;
     }
 
@@ -100,9 +104,14 @@ public class Application extends Controller {
         String result;
         String token = session().get("token");
         SecurityInfoShare sis = new SecurityInfoShare();
-        sis.loadKey();
-        result = sis.decrypt(token);
-        return ok(result);
+        boolean success = sis.loadKey();
+        if(success){
+            result = sis.decrypt(token);
+            return ok(result);
+        }
+        else{
+            return internalServerError();
+        }
     }
 
 	@Restrict(@Group(Application.USER_ROLE))
@@ -113,13 +122,17 @@ public class Application extends Controller {
 
     public static Result forceKeyCreation() {
         SecurityInfoShare sis = new SecurityInfoShare();
-        sis.createKey();
-        return ok();
+        boolean result = sis.createKey();
+
+        if(result){
+            return ok();
+        }
+        else{
+            return internalServerError();
+        }
     }
 
 	public static Result login() {
-        String token = session().get("token");
-        Logger.info(token);
 		return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
 	}
 
