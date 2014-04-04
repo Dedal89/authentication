@@ -7,10 +7,14 @@ import models.AuthToken;
 import models.SecurityInfoShare;
 import models.User;
 import net.minidev.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
 import play.Play;
 import play.Routes;
+import play.api.libs.json.JsPath;
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.*;
 import play.mvc.Http.Session;
 import play.mvc.Result;
@@ -68,25 +72,142 @@ public class Application extends Controller {
 
 	}
 
-    public static Result retrieveUser(String token){
-
+    public static Result retrievePublicKey(){
+        String ipAddress = request().getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request().remoteAddress();
+            Logger.info(ipAddress);
+        }
+        //TODO fare whitelist degli ip accettati
         SecurityInfoShare sis = new SecurityInfoShare();
+        sis.loadKey();
+        String content  = sis.getPublicKey();
+        JSONObject data = new JSONObject();
+        data.put("publicKey", content);
+        response().setContentType("application/json");
+        return ok(data.toJSONString());
+    }
 
-        boolean success = sis.loadKey();
-     //   String result = sis.getPublicKey();
-     //   String publicKey = request().body().asText();
-     //   sis.setSpecificPublicKey(publicKey);
-        if(success){
-            User user = new User();
-            String userdata = user.retrieveUser(token);
-            String result = sis.encrypt(userdata);
-          //  result = test(result);
-        return ok(result);
+    public static Result retrieveUser(){
+        String key;
+        String dataEncrypted;
+        String data;
+        JsonNode content;
+        String idUser = null;
+        boolean success;
+        SecurityInfoShare sis = new SecurityInfoShare();
+        JsonNode body = request().body().asJson();
+        if(body != null){
+            if(body.has("data")){
+                dataEncrypted = body.get("data").asText();
+                success = sis.loadKey();
+                if(success){
+                    data = sis.encrypt(dataEncrypted);
+                    //TODO parse data into a json and exctract idUser
+                }
+                else{
+                    return internalServerError();
+                }
+            }
+            else{
+                return badRequest("Missing user id");
+            }
+            if(body.has("publicKey")){
+                key = body.get("publicKey").asText();
+            }
+            else{
+                return badRequest("Missing public key");
+            }
+            success = sis.setSpecificPublicKey(key);
+            if(success){
+                User user = new User();
+                String userdata = user.retrieveUser(idUser);
+                String result = sis.encrypt(userdata);
+         //     //  result = test(result);
+            return ok(result);
+            }
+            else{
+                return internalServerError();
+            }
         }
         else{
-            return internalServerError();
+            return badRequest("missing body, content-type must be application/json");
         }
     }
+
+    public static Result doExternalLogin(){
+        SecurityInfoShare sis = new SecurityInfoShare();
+        JsonNode body = request().body().asJson();
+        String dataEncrypted;
+        String data;
+        JSONObject content;
+        if(body != null){
+            if(body.has("data")){
+                dataEncrypted = body.get("data").asText();
+                if(body.has("publicKey")){
+                    sis.loadKey();
+                    data = sis.decrypt(dataEncrypted);
+
+                    //TODO parse data into json object, extract authentication fields, doLogin, retrieve user id, sis.setSpecificPublicKey(body.get("publicKey").asText()), sis.encrypt(id), response back
+
+
+
+
+                    return ok();
+                }
+                else{
+                    return badRequest("publicKey field is missing");
+                }
+            }
+            else{
+                return badRequest("data field is missing");
+            }
+        }
+        else{
+            return badRequest("missing body, content-type must be application/json");
+        }
+    }
+
+    public static Result doExternalSignup(){
+        SecurityInfoShare sis = new SecurityInfoShare();
+        JsonNode body = request().body().asJson();
+        String dataEncrypted;
+        String data;
+        JSONObject content;
+        if(body != null){
+            if(body.has("data")){
+                dataEncrypted = body.get("data").asText();
+                if(body.has("publicKey")){
+                    sis.loadKey();
+                    data = sis.decrypt(dataEncrypted);
+
+                    //TODO parse data into json object, extract authentication fields, check user exists and create user, retrieve user id, sis.setSpecificPublicKey(body.get("publicKey").asText()), sis.encrypt(id), response back
+
+
+
+
+                    return ok();
+                }
+                else{
+                    return badRequest("publicKey field is missing");
+                }
+            }
+            else{
+                return badRequest("data field is missing");
+            }
+        }
+        else{
+            return badRequest("missing body, content-type must be application/json");
+        }
+    }
+
+    public static Result doExternalProvider(String provider){
+        //TODO log with provider, create user, retrieve id, encrypt it with received public key, send it back
+
+
+        return ok();
+    }
+
 
     public static String test(String text){
         SecurityInfoShare sis = new SecurityInfoShare();
