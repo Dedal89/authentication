@@ -14,20 +14,20 @@ import com.feth.play.module.pa.user.NameIdentity;
 import com.feth.play.module.pa.user.FirstLastNameIdentity;
 import models.TokenAction.Type;
 import net.minidev.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
 import play.Logger;
 import play.data.format.Formats;
 import play.db.ebean.Model;
 import providers.MyUsernamePasswordAuthUser;
 
 import play.db.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
+import java.sql.*;
+
+import java.util.Date;
 import java.util.Random;
 
 import javax.persistence.*;
-import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -154,6 +154,198 @@ public class User extends Model implements Subject {
 		Ebean.save(Arrays.asList(new User[] { otherUser, this }));
 	}
 
+    public static String myLogin(String email, String password){
+        String result = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        try{
+            connection = DB.getConnection();
+            final String query = "SELECT * FROM USERS WHERE EMAIL=?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            rs = statement.executeQuery();
+            if(rs.isBeforeFirst()){
+                rs.next();
+
+                SecurityInfoShare sis = new SecurityInfoShare();
+                sis.loadKey();
+                if(password.equals(sis.decrypt(rs.getString("PASSWORD")))){
+                    result = rs.getString("ID");
+                }
+                else{
+                    result = "email or password wrong";
+                }
+            }
+            else{
+                result = "there is no user";
+            }
+        }
+        catch(Exception e){
+            Logger.error("Error during connection for retrieving user with email: "+email);
+        }
+        finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                play.Logger.error("Unable to close a SQL connection.");
+            }
+
+        }
+        return result;
+    }
+
+    public static String mySignUp(String email, String password){
+        String result = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Statement statement1 = null;
+        PreparedStatement statement2 = null;
+        ResultSet rs = null;
+        ResultSet rs1 = null;
+        Long maxId = 1L;
+        try{
+            connection = DB.getConnection();
+            final String query = "SELECT * FROM USERS WHERE EMAIL=?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            rs = statement.executeQuery();
+            if(rs.isBeforeFirst()){
+                result = "user already exists";
+            }
+            else{
+                final String query1 = "SELECT id from USERS ORDER BY id DESC LIMIT 1";
+                try{
+                    statement1 = connection.createStatement();
+                    rs1 =statement1.executeQuery(query1);
+                    if(rs1.isBeforeFirst()){
+                        rs1.next();
+                        maxId = rs1.getLong("ID");
+                        Logger.info("max id is: " +maxId);
+                        maxId++;
+                    }
+                    else{
+                        Logger.info("this will be the first row");
+                    }
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    Logger.error("Error in retrieving max id");
+                }
+                final String query2 ="INSERT INTO USERS (ID,EMAIL,PASSWORD) VALUES (?,?,?)";
+                statement2 = connection.prepareStatement(query2);
+                statement2.setLong(1, maxId);
+                statement2.setString(2, email);
+
+                SecurityInfoShare sis = new SecurityInfoShare();
+                sis.loadKey();
+                password = sis.encrypt(password);
+
+                statement2.setString(3, password);
+                statement2.executeUpdate();
+                Logger.info("User " + email+" created with id: "+maxId);
+                result = maxId.toString();
+            }
+        }
+        catch(Exception e){
+            Logger.error("Error during connection for creating user with email: "+email);
+        }
+        finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (statement1 != null)
+                    statement1.close();
+                if (statement2 != null)
+                    statement2.close();
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                play.Logger.error("Unable to close a SQL connection.");
+            }
+
+        }
+        return result;
+    }
+
+    public static String mySignUp(String email, String password, String otherFields){
+        String result = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Statement statement1 = null;
+        PreparedStatement statement2 = null;
+        ResultSet rs = null;
+        ResultSet rs1 = null;
+        Long maxId = 1L;
+        try{
+            connection = DB.getConnection();
+            final String query = "SELECT * FROM USERS WHERE EMAIL=?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            rs = statement.executeQuery();
+            if(rs.isBeforeFirst()){
+                result = "user already exists";
+            }
+            else{
+                final String query1 = "SELECT id from USERS  ORDER BY id DESC LIMIT 1";
+                try{
+                    statement1 = connection.createStatement();
+                    rs1 =statement1.executeQuery(query1);
+                    if(rs1.isBeforeFirst()){
+                        rs1.next();
+                        maxId = rs1.getLong("ID");
+                        Logger.info("max id is: " +maxId);
+                        maxId++;
+                    }
+                    else{
+                        Logger.info("this will be the first row");
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    Logger.error("Error in retrieving max id");
+                }
+                final String query2 ="INSERT INTO USERS (ID,EMAIL,PASSWORD,OTHERFIELDS) VALUES (?,?,?,?)";
+                statement2 = connection.prepareStatement(query2);
+                statement2.setLong(1, maxId);
+                statement2.setString(2, email);
+
+                SecurityInfoShare sis = new SecurityInfoShare();
+                sis.loadKey();
+                password = sis.encrypt(password);
+
+                statement2.setString(3, password);
+                statement2.setString(4, otherFields);
+                statement2.executeUpdate();
+                Logger.info("User " + email+" created with id: "+maxId);
+                result = maxId.toString();
+            }
+        }
+        catch(Exception e){
+            Logger.error("Error during connection for creating user with email: "+email);
+        }
+        finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (statement1 != null)
+                    statement1.close();
+                if (statement2 != null)
+                    statement2.close();
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                play.Logger.error("Unable to close a SQL connection.");
+            }
+
+        }
+        return result;
+    }
+
 	public static User create(final AuthUser authUser) {
 		final User user = new User();
 		user.roles = Collections.singletonList(SecurityRole
@@ -239,7 +431,7 @@ public class User extends Model implements Subject {
 
         try{
             connection = DB.getConnection();
-            final String query = "SELECT * FROM USERs WHERE ID=?";
+            final String query = "SELECT * FROM USERS WHERE ID=?";
             statement = connection.prepareStatement(query);
             statement.setString(1, id);
             rs = statement.executeQuery();

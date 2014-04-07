@@ -14,12 +14,15 @@ POST    /signup                controllers.Signup.doSignup
 GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted
 
+GET     /forcekeycreation             controllers.Application.forceKeyCreation
 GET     /retrievepublickey              controllers.Application.retrievePublicKey
-POST    /doexternalsignup               controllers.Application.doExternalSignup
+POST    /doexternalsignup               controllers.Application.doExternalSignUp
 POST    /doexternallogin                controllers.Application.doExternalLogin
 POST    /doexternalprovider/:provider   controllers.Application.doExternalProvider(provider: String)
 POST    /retrieveuserinfo               controllers.Application.retrieveUser
 
+#Comment next line after creation of whitelist
+GET     /createwhitelist              controllers.Application.createWhitelist
 
 
 GET     /assets/javascript/routes.js    controllers.Application.jsRoutes
