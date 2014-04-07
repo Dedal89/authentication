@@ -40,6 +40,8 @@ public class Application extends Controller {
 	public static final String USER_ROLE = "user";
     private final static String redirectUrl = Play.application().configuration()
             .getString("redirectUrl");
+    private final static String fileLocation = Play.application().configuration()
+            .getString("fileLocation");
 	private static ArrayList<String> ips = new ArrayList<>();
 
 	public static Result index() {
@@ -78,9 +80,9 @@ public class Application extends Controller {
 
     public static Result createWhitelist(){
         try{
-            File file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/whiteList.txt");
+            File file = new File("whiteList.txt");
             if (file.exists()) {
-                FileInputStream fis = new FileInputStream("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/whitelist.txt");
+                FileInputStream fis = new FileInputStream(fileLocation+"whitelist.txt");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 ips = (ArrayList<String>) ois.readObject();
                 ois.close();
@@ -401,7 +403,7 @@ public class Application extends Controller {
 
     private static boolean checkIp(String ipAddress){
         try{
-            FileInputStream fis = new FileInputStream("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/whitelist.txt");
+            FileInputStream fis = new FileInputStream(fileLocation+"whitelist.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
             ips = (ArrayList<String>) ois.readObject();
             ois.close();

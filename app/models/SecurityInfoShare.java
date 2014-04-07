@@ -1,6 +1,7 @@
 package models;
 
 import play.Logger;
+import play.Play;
 import play.db.ebean.Model;
 
 import java.io.*;
@@ -20,6 +21,9 @@ public class SecurityInfoShare extends Model {
     private PrivateKey privateKey;
     private String algorithm = "RSA";
 
+    private final static String fileLocation = Play.application().configuration()
+            .getString("fileLocation");
+
     public boolean createKey(){
         try{
             String saveKey = null;
@@ -30,7 +34,7 @@ public class SecurityInfoShare extends Model {
             byte[] pubKey = keyPair.getPublic().getEncoded();
             saveKey = new String(pubKey, "ISO-8859-1");
 
-            File file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/publicKey.txt");
+            File file = new File(fileLocation+"publicKey.txt");
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -42,7 +46,7 @@ public class SecurityInfoShare extends Model {
             byte[] privateKey = keyPair.getPrivate().getEncoded();
             saveKey = new String(privateKey, "ISO-8859-1");
 
-            file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/privateKey.txt");
+            file = new File(fileLocation+"privateKey.txt");
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -63,7 +67,7 @@ public class SecurityInfoShare extends Model {
         int value =0;
         String key= new String();
         try{
-            File file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/publicKey.txt");
+            File file = new File(fileLocation+"publicKey.txt");
             if (!file.exists()) {
                 Logger.error("publicKey file dosn't exists");
                 return false;
@@ -81,7 +85,7 @@ public class SecurityInfoShare extends Model {
 
             key= new String();
 
-            file = new File("/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/files/privateKey.txt");
+            file = new File(fileLocation+"privateKey.txt");
             if (!file.exists()) {
                 Logger.error("publicKey file dosn't exists");
                 return false;
