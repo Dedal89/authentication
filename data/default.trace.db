@@ -349,3 +349,23 @@ SELECT * FROM USERs WHERE ID=? [22018-168]
 04-03 15:19:03 jdbc[10]: exception
 org.h2.jdbc.JdbcSQLException: Data conversion error converting "a"; SQL statement:
 SELECT * FROM USERs WHERE ID=? [22018-168]
+04-07 17:04:53 database: close
+org.h2.message.DbException: IO Exception: "java.io.EOFException"; "/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/data/default.h2.db" [90031-168]
+	at org.h2.message.DbException.get(DbException.java:158)
+	at org.h2.message.DbException.convertIOException(DbException.java:315)
+	at org.h2.store.FileStore.readFully(FileStore.java:278)
+	at org.h2.store.PageStore.readPage(PageStore.java:1285)
+	at org.h2.store.PageStore.getPage(PageStore.java:735)
+	at org.h2.store.PageStreamTrunk$Iterator.next(PageStreamTrunk.java:247)
+	at org.h2.store.PageLog.free(PageLog.java:210)
+	at org.h2.store.PageStore.compact(PageStore.java:491)
+	at org.h2.engine.Database.closeOpenFilesAndUnlock(Database.java:1199)
+	at org.h2.engine.Database.close(Database.java:1149)
+	at org.h2.engine.DatabaseCloser.run(DatabaseCloser.java:80)
+Caused by: org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.EOFException"; "/Users/Riboni1989/Desktop/Lavoro/LucaG/authentication/data/default.h2.db" [90031-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	... 11 more
+Caused by: java.io.EOFException
+	at org.h2.store.fs.FileUtils.readFully(FileUtils.java:359)
+	at org.h2.store.FileStore.readFully(FileStore.java:276)
+	... 8 more
