@@ -239,7 +239,7 @@ public class User extends Model implements Subject {
 
         try{
             connection = DB.getConnection();
-            final String query = "SELECT * FROM USERs WHERE ID=?";
+            final String query = "SELECT * FROM USERS WHERE ID=?";
             statement = connection.prepareStatement(query);
             statement.setString(1, id);
             rs = statement.executeQuery();
@@ -256,6 +256,17 @@ public class User extends Model implements Subject {
                 content.put("firstname",rs.getString("first_name"));
                 content.put("lastname",rs.getString("last_name"));
                 content.put("country",rs.getString("nation"));
+
+                rs.close();
+                statement.close();
+
+                final String query1 = "SELECT * FROM AUTHTOKEN WHERE USER=?";
+                statement = connection.prepareStatement(query1);
+                statement.setString(1, id);
+                rs = statement.executeQuery();
+                while(rs.next()){
+                    content.put(rs.getString("provider"),rs.getString("token"));
+                }
             }
             else{
                 content.put("error","there is no user with id: "+id);
@@ -268,7 +279,6 @@ public class User extends Model implements Subject {
             try {
                 if (statement != null)
                     statement.close();
-
                 if (connection != null)
                     connection.close();
             } catch (final SQLException e) {

@@ -15,8 +15,6 @@ GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted
 
 GET     /retrieveuser/:token                controllers.Application.retrieveUser(token: String)
-GET     /forcekeycreation                   controllers.Application.forceKeyCreation
-GET     /test2                              controllers.Application.test2
 
 GET     /assets/javascript/routes.js    controllers.Application.jsRoutes
 

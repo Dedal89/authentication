@@ -4,10 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import models.AuthToken;
-import models.SecurityInfoShare;
 import models.User;
-import net.minidev.json.JSONObject;
-import play.Logger;
 import play.Play;
 import play.Routes;
 import play.data.Form;
@@ -50,66 +47,17 @@ public class Application extends Controller {
 		final User localUser = getLocalUser(session());
         AuthToken auth = new AuthToken();
         auth.updateStatus(localUser.getIdentifier(),session().get("pa.p.id"), session().get("oauthaccessToken"));
-
-        JSONObject content = new JSONObject();
-        content.put("userid", localUser.getIdentifier());
-        content.put("username", localUser.name);
-        content.put("provider", session().get("pa.p.id"));
-        content.put("token", session().get("oauthaccessToken"));
-        String payload = content.toJSONString();
-
-        SecurityInfoShare sis = new SecurityInfoShare();
-        sis.loadKey();
-        String result = sis.encrypt(payload);
-
-        session().put("token", result);
-
-        return redirect(redirectUrl);
-
+        return redirect(redirectUrl+"/?userId="+localUser.getIdentifier());
 	}
 
     public static Result retrieveUser(String token){
-
-        SecurityInfoShare sis = new SecurityInfoShare();
-
-        boolean success = sis.loadKey();
-     //   String result = sis.getPublicKey();
-     //   String publicKey = request().body().asText();
-     //   sis.setSpecificPublicKey(publicKey);
-        if(success){
+        try{
             User user = new User();
             String userdata = user.retrieveUser(token);
-            String result = sis.encrypt(userdata);
-          //  result = test(result);
-        return ok(result);
+            response().setContentType("application/json");
+            return ok(userdata);
         }
-        else{
-            return internalServerError();
-        }
-    }
-
-    public static String test(String text){
-        SecurityInfoShare sis = new SecurityInfoShare();
-        String result= "error in loading key";
-        boolean success = sis.loadKey();
-        if(success){
-            Logger.info("before >>>>>>>>> "+text);
-            result = sis.decrypt(text);
-            Logger.info("after >>>>>>>>>> "+result);
-        }
-        return result;
-    }
-
-    public static Result test2(){
-        String result;
-        String token = session().get("token");
-        SecurityInfoShare sis = new SecurityInfoShare();
-        boolean success = sis.loadKey();
-        if(success){
-            result = sis.decrypt(token);
-            return ok(result);
-        }
-        else{
+        catch (Exception e){
             return internalServerError();
         }
     }
@@ -119,18 +67,6 @@ public class Application extends Controller {
 		final User localUser = getLocalUser(session());
 		return ok(profile.render(localUser));
 	}
-
-    public static Result forceKeyCreation() {
-        SecurityInfoShare sis = new SecurityInfoShare();
-        boolean result = sis.createKey();
-
-        if(result){
-            return ok();
-        }
-        else{
-            return internalServerError();
-        }
-    }
 
 	public static Result login() {
 		return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
