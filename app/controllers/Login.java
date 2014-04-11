@@ -17,6 +17,11 @@ public class Login extends Controller {
 
     }
 
+    public static Result applicationLogin(String url) {
+        session().put("redirectTo", url);
+        return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
+
+    }
 
     public static Result doLogin() {
         com.feth.play.module.pa.controllers.Authenticate.noCache(response());

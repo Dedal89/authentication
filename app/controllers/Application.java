@@ -2,11 +2,13 @@ package controllers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import models.AuthToken;
 import models.User;
 import play.Play;
 import play.Routes;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.*;
 import play.mvc.Http.Session;
@@ -28,8 +30,6 @@ public class Application extends Controller {
 	public static final String FLASH_MESSAGE_KEY = "message";
 	public static final String FLASH_ERROR_KEY = "error";
 	public static final String USER_ROLE = "user";
-    private final static String redirectUrl = Play.application().configuration()
-            .getString("redirectUrl");
 	
 	public static Result index() {
 		return ok(index.render());
@@ -45,10 +45,17 @@ public class Application extends Controller {
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result restricted() {
 		final User localUser = getLocalUser(session());
-        AuthToken auth = new AuthToken();
-        auth.updateStatus(localUser.getIdentifier(),session().get("pa.p.id"), session().get("oauthaccessToken"));
-        return redirect(redirectUrl+"/?userId="+localUser.getIdentifier());
+        session().put("userId", localUser.getIdentifier());
+        return ok(profile.render(localUser));
 	}
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result redirectTo() {
+        final User localUser = getLocalUser(session());
+        String redirectUrl = session().get("redirectTo");
+
+        return redirect("http://"+redirectUrl+"/?userId="+localUser.getIdentifier()+"&username="+localUser.name+"&email="+localUser.email);
+    }
 
     public static Result retrieveUser(String token){
         try{

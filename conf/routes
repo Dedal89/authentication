@@ -6,6 +6,7 @@
 
 
 GET     /                      controllers.Login.login
+GET     /applicationLogin/:url                      controllers.Login.applicationLogin(url: String)
 POST    /login                 controllers.Login.doLogin
 
 GET     /signup                controllers.Signup.signup
@@ -15,6 +16,7 @@ GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted
 
 GET     /retrieveuser/:token                controllers.Application.retrieveUser(token: String)
+GET    /redirectto                        controllers.Application.redirectTo
 
 GET     /assets/javascript/routes.js    controllers.Application.jsRoutes
 

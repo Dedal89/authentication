@@ -456,3 +456,12 @@ org.h2.jdbc.JdbcSQLException: Column "provider" not found [42122-168]
 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975)
 	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1478)
 	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104)
+04-11 12:31:25 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USERS[*] SELECT * FROM USERS"; expected "UPDATE, {"; SQL statement:
+USERS SELECT * FROM USERS [42001-168]
+04-11 12:47:57 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_PERMISSION"; expected "UPDATE, {"; SQL statement:
+USER_PERMISSION [42001-168]
+04-11 12:48:07 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_PERMISSION"; expected "UPDATE, {"; SQL statement:
+USER_PERMISSION [42001-168]

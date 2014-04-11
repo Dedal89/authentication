@@ -30,7 +30,7 @@
           '_showConstraints -> false,
           '_label -> Messages("playauthenticate.login.password.placeholder")
         )
-          
+
         <input type="submit" value="Login" class="btn btn-primary"><br/>
         <a class="btn btn-primary" href="@routes.Signup.signup">Register</a><br/>
         <br/>
@@ -38,12 +38,6 @@
 
 
     	}
-    </div>
-
-    <div>
-      @Messages("playauthenticate.login.oauth")
-      @* Display list of available providers *@
-      @_providerPartial(skipCurrent=false)
     </div>
 
   </div>

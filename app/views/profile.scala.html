@@ -43,8 +43,14 @@
     }
     <br/>
     <ul>
+        <li><a href="@routes.Account.link()">@Messages("playauthenticate.navigation.link_more")</a></li>
     	<li><a href="@routes.Account.changePassword">@Messages("playauthenticate.profile.password_change")</a></li>
         <li><a href="@routes.Account.changeNickname">@Messages("playauthenticate.profile.name_change")</a></li>
     </ul>
+    <br/>
+    <br/>
+        <form method="get" action="redirectto">
+            <input type="submit" class="btn btn-primary" value="Go to your website">
+        </form>
     </p>
 }

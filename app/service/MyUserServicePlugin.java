@@ -3,6 +3,7 @@ package service;
 import com.feth.play.module.pa.providers.oauth1.OAuth1AuthUser;
 import com.feth.play.module.pa.providers.oauth2.OAuth2AuthUser;
 import com.feth.play.module.pa.user.EmailIdentity;
+import models.AuthToken;
 import models.User;
 import org.omg.CORBA.NameValuePair;
 import play.Application;
@@ -78,21 +79,28 @@ public class MyUserServicePlugin extends UserServicePlugin {
 	public AuthUser update(final AuthUser knownUser) {
 		// User logged in again, bump last login date
 
+        String token = null;
+        String provider = "password";
+        String userId = Http.Context.current().session().get("userId");
+
         if (knownUser instanceof OAuth2AuthUser)
         {
             OAuth2AuthUser oAuth2AuthUser = (OAuth2AuthUser) knownUser;
-            String oauth2accessToken = oAuth2AuthUser.getOAuth2AuthInfo().getAccessToken();
-            Http.Context.current().session().put("oauthaccessToken", oauth2accessToken);
+            token = oAuth2AuthUser.getOAuth2AuthInfo().getAccessToken();
+            provider = oAuth2AuthUser.getProvider();
         }
 
         if (knownUser instanceof OAuth1AuthUser)
         {
             OAuth1AuthUser oAuth1AuthUser = (OAuth1AuthUser) knownUser;
-            String oauth1accessToken = oAuth1AuthUser.getOAuth1AuthInfo().getAccessToken();
-            Http.Context.current().session().put("oauthaccessToken", oauth1accessToken);
+            token = oAuth1AuthUser.getOAuth1AuthInfo().getAccessToken();
+            provider = oAuth1AuthUser.getProvider();
         }
-
-		User.setLastLoginDate(knownUser);
+        if(!provider.equals("password")){
+            AuthToken auth = new AuthToken();
+            auth.updateStatus(userId,provider, token);
+        }
+        User.setLastLoginDate(knownUser);
 		return knownUser;
 	}
 
