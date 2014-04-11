@@ -20,7 +20,6 @@ import play.i18n.Messages;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 
-import javax.validation.constraints.AssertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -162,11 +161,8 @@ public class MyUsernamePasswordAuthProvider
 		// return SignupResult.USER_CREATED;
 		// then the user gets logged in directly
 
-        //TODO after test remove this line and uncomment next
-        Logger.debug("remove this line after tests app/providers/MyUsernamePasswordAuthProvider.java: 162");
-        return SignupResult.USER_CREATED;
 
-		 //   return SignupResult.USER_CREATED_UNVERIFIED;
+        return SignupResult.USER_CREATED_UNVERIFIED;
 
 	}
 

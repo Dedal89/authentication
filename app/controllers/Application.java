@@ -2,13 +2,9 @@ package controllers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
-import models.AuthToken;
 import models.User;
-import play.Play;
 import play.Routes;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.*;
 import play.mvc.Http.Session;
@@ -43,26 +39,25 @@ public class Application extends Controller {
 	}
 
 	@Restrict(@Group(Application.USER_ROLE))
-	public static Result restricted() {
+	public static Result restricted(){
 		final User localUser = getLocalUser(session());
         session().put("userId", localUser.getIdentifier());
         return ok(profile.render(localUser));
 	}
 
     @Restrict(@Group(Application.USER_ROLE))
-    public static Result redirectTo() {
+    public static Result redirectTo(){
         final User localUser = getLocalUser(session());
         String redirectUrl = session().get("redirectTo");
-
-        return redirect("http://"+redirectUrl+"/?userId="+localUser.getIdentifier()+"&username="+localUser.name+"&email="+localUser.email);
+        return redirect("https://"+redirectUrl+"/?userId="+localUser.getIdentifier()+"&username="+localUser.name+"&email="+localUser.email);
     }
 
     public static Result retrieveUser(String token){
         try{
             User user = new User();
-            String userdata = user.retrieveUser(token);
+            String userData = user.retrieveUser(token);
             response().setContentType("application/json");
-            return ok(userdata);
+            return ok(userData);
         }
         catch (Exception e){
             return internalServerError();

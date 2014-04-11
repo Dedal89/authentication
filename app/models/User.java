@@ -208,8 +208,6 @@ public class User extends Model implements Subject {
             user.emailValidated = false;
             user.name = identity.getName();
 
-
-
             user.nation = identity.getNation();
             user.companyName = identity.getCompanyName();
             user.businessDimension = identity.getBusinessDimension();
@@ -217,9 +215,6 @@ public class User extends Model implements Subject {
             user.city = identity.getCity();
             user.accessibility = identity.getAccessibility();
 
-
-            Logger.debug("remove this line after tests app/models/User.java: 213");
-            user.emailValidated = true;
         }
 
 
@@ -231,12 +226,11 @@ public class User extends Model implements Subject {
 	}
 
     public String retrieveUser(String id){
-        String result = null;
+        String result;
         JSONObject content = new JSONObject();
         Connection connection = null;
         PreparedStatement statement = null;
-        ResultSet rs = null;
-
+        ResultSet rs;
         try{
             connection = DB.getConnection();
             final String query = "SELECT * FROM USERS WHERE ID=?";
@@ -256,10 +250,8 @@ public class User extends Model implements Subject {
                 content.put("firstname",rs.getString("first_name"));
                 content.put("lastname",rs.getString("last_name"));
                 content.put("country",rs.getString("nation"));
-
                 rs.close();
                 statement.close();
-
                 final String query1 = "SELECT * FROM AUTHTOKEN WHERE USER=?";
                 statement = connection.prepareStatement(query1);
                 statement.setString(1, id);
@@ -282,11 +274,9 @@ public class User extends Model implements Subject {
                 if (connection != null)
                     connection.close();
             } catch (final SQLException e) {
-                play.Logger.error("Unable to close a SQL connection.");
+                Logger.error("Unable to close a SQL connection.");
             }
-
         }
-
         result = content.toJSONString();
         return result;
     }

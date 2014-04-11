@@ -4,7 +4,7 @@ import providers.MyUsernamePasswordAuthProvider.MySignup;
 
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
 import com.feth.play.module.pa.user.NameIdentity;
-import views.html.main;
+
 
 public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
 		implements NameIdentity {

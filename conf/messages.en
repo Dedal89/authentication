@@ -97,7 +97,7 @@ playauthenticate.link.account.ok=OK
 # play-authenticate: Signup folder translations
 
 playauthenticate.verify.email.title=Verify your e-mail
-playauthenticate.verify.email.requirement=Before you can use PlayAuthenticate, you first need to verify your e-mail address.
+playauthenticate.verify.email.requirement=Before you can use CubrikProject LoginApp, you first need to verify your e-mail address.
 playauthenticate.verify.email.cta=An e-mail has been sent to the registered address. Please follow the embedded link to activate your account.
 
 playauthenticate.password.reset.title=Reset password
@@ -107,7 +107,7 @@ playauthenticate.password.forgot.title=Forgot password
 playauthenticate.password.forgot.cta=Send reset instructions
 
 playauthenticate.oauth.access.denied.title=OAuth access denied
-playauthenticate.oauth.access.denied.explanation=If you want to use PlayAuthenticate with OAuth, you must accept the connection.
+playauthenticate.oauth.access.denied.explanation=If you want to use CubrikProject LoginApp with OAuth, you must accept the connection.
 playauthenticate.oauth.access.denied.alternative=If you rather not like to do this, you can also
 playauthenticate.oauth.access.denied.alternative.cta=sign up with a username and password instead
 

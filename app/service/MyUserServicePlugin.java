@@ -5,7 +5,6 @@ import com.feth.play.module.pa.providers.oauth2.OAuth2AuthUser;
 import com.feth.play.module.pa.user.EmailIdentity;
 import models.AuthToken;
 import models.User;
-import org.omg.CORBA.NameValuePair;
 import play.Application;
 
 import com.feth.play.module.pa.user.AuthUser;
@@ -13,7 +12,6 @@ import com.feth.play.module.pa.user.AuthUserIdentity;
 import com.feth.play.module.pa.service.UserServicePlugin;
 import play.mvc.Http;
 
-import java.util.List;
 
 public class MyUserServicePlugin extends UserServicePlugin {
 
