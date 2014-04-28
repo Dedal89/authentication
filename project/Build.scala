@@ -8,15 +8,15 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      "be.objectify"  %%  "deadbolt-java"     % "2.1-RC2",
-      "org.json" % "json" % "20090211",
-      "net.sf.json-lib" % "json-lib" % "2.4" classifier "jdk15",
-      // Comment this for local development of the Play Authentication core
-      "com.feth"      %%  "play-authenticate" % "0.3.4-SNAPSHOT",
-      "postgresql"    %   "postgresql"        % "9.1-901-1.jdbc4",
+      // Add your project dependencies here,
       javaCore,
       javaJdbc,
-      javaEbean
+      javaEbean,
+      "org.json" % "json" % "20090211",
+      "gov.nih.imagej" % "imagej" % "1.47",
+      "net.sf.json-lib" % "json-lib" % "2.4" classifier "jdk15",
+      "be.objectify"  %%  "deadbolt-java"     % "2.2.1-RC2",
+      "com.feth"      %%  "play-authenticate" % "0.5.2-SNAPSHOT"
     )
     
 //  Uncomment this for local development of the Play Authenticate core:

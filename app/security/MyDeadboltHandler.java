@@ -1,8 +1,12 @@
 package security;
 
 import models.User;
-import play.mvc.Http;
-import play.mvc.Result;
+
+import play.*;
+import play.mvc.*;
+import play.mvc.Http.*;
+import play.libs.F.*;
+
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.core.models.Subject;
@@ -13,7 +17,7 @@ import com.feth.play.module.pa.user.AuthUserIdentity;
 public class MyDeadboltHandler extends AbstractDeadboltHandler {
 
 	@Override
-	public Result beforeAuthCheck(final Http.Context context) {
+	public Promise<SimpleResult> beforeAuthCheck(final Http.Context context) {
 		if (PlayAuthenticate.isLoggedIn(context.session())) {
 			// user is logged in
 			return null;
@@ -29,7 +33,7 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
 
 			context.flash().put("error",
 					"You need to log in first, to view '" + originalUrl + "'");
-			return redirect(PlayAuthenticate.getResolver().login());
+            return Promise.<SimpleResult>pure(redirect(PlayAuthenticate.getResolver().login()));
 		}
 	}
 
@@ -47,11 +51,11 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
 	}
 
 	@Override
-	public Result onAuthFailure(final Http.Context context,
+	public Promise<SimpleResult> onAuthFailure(final Http.Context context,
 			final String content) {
 		// if the user has a cookie with a valid user and the local user has
 		// been deactivated/deleted in between, it is possible that this gets
 		// shown. You might want to consider to sign the user out in this case.
-		return forbidden("Forbidden");
+        return Promise.<SimpleResult>pure(forbidden("Forbidden"));
 	}
 }
