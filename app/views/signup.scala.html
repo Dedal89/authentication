@@ -35,21 +35,27 @@
 
             @helper.select(
                 signupForm("businessDimension"),
-                options(" < 50 " -> " < 50 "," 50 - 250 " -> " 50 - 250 "," > 250 " -> " > 250 "),
+                options(
+                    " < 50 " -> " < 50 ",
+                    " 50 - 250 " -> " 50 - 250 ",
+                    " > 250 " -> " > 250 "),
                 '_label -> "Business dimension (numbers of employers)",
                 '_default -> "-- Select dimension --"
             )
 
             @helper.select(
                 signupForm("mainInterests"),
-                options(" Fashion" -> " Fashion "," Clothing accessories " -> " Clothing accessories "," Other " -> " Other "),
+                options(
+                    " Fashion " -> " Fashion ",
+                    " Clothing accessories " -> " Clothing accessories ",
+                    " Other " -> " Other "),
                 '_label -> "Main area of interests",
                 '_default -> "-- Select  --"
             )
 
             @inputText(
-                signupForm("nation"),
-                '_label -> "Nation"
+            signupForm("nation"),
+            '_label -> "Nation"
             )
 
             @inputText(
@@ -59,6 +65,7 @@
 
             @checkbox(
                 signupForm("accessibility"),
+                '_default -> "False",
                 '_label -> "Accessibility"
             )
 
