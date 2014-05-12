@@ -1,5 +1,7 @@
 package models;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import play.Logger;
 import play.db.DB;
 import play.db.ebean.Model;
@@ -24,6 +26,8 @@ public class AuthToken extends Model {
     public String user;
     public String provider;
     public String token;
+    public String cubrikpsw;
+    public String cubriktoken;
 
     public void updateStatus(String user, String provider, String token){
         Connection connection = null;
@@ -71,12 +75,40 @@ public class AuthToken extends Model {
                     e.printStackTrace();
                     Logger.error("Error in retrieving max id");
                 }
-                final String query4 = "INSERT INTO AUTHTOKEN (ID,USER, PROVIDER, TOKEN) VALUES (?,?,?,?)";
+
+                //send registration to cubrik-storage
+                cubrikpsw = "1234";
+                try{
+                    JSONObject userObj= new JSONObject();
+                    userObj.put("login",user);
+                    userObj.put("password",cubrikpsw);
+                    JSONArray groups = new JSONArray();
+                    groups.put("fu");
+                    groups.put("bar");
+                    groups.put("users");
+                    userObj.put("groups",groups);
+
+                    String jsonString = userObj.toString();
+
+                    //TODO bisogna inviare la richiesta di registrazione, aspettare la risposta e richiedere il token
+              //      String oid = storeClient.insertDocument(jsonString, COLLECTION, authToken);
+
+
+
+                }
+                catch(Exception e){
+                    Logger.error("Error during creation of JSON for cubrik-storage");
+                }
+
+
+                final String query4 = "INSERT INTO AUTHTOKEN (ID,USER, PROVIDER, TOKEN, CUBRIKPASSWORD, CUBRIKTOKEN) VALUES (?,?,?,?,?,?)";
                 statement1 = connection.prepareStatement(query4);
                 statement1.setLong(1, maxId);
                 statement1.setString(2, user);
                 statement1.setString(3, provider);
                 statement1.setString(4, token);
+                statement1.setString(5, cubrikpsw);
+                statement1.setString(6, cubriktoken);
                 statement1.executeUpdate();
                 Logger.info("User " + user+" with provider: "+ provider+" created with id: "+maxId);
             }

@@ -5,6 +5,8 @@ import be.objectify.deadbolt.core.models.Role;
 import be.objectify.deadbolt.core.models.Subject;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import play.data.validation.Constraints;
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
 import com.feth.play.module.pa.user.AuthUser;
@@ -13,7 +15,6 @@ import com.feth.play.module.pa.user.EmailIdentity;
 import com.feth.play.module.pa.user.NameIdentity;
 import com.feth.play.module.pa.user.FirstLastNameIdentity;
 import models.TokenAction.Type;
-import net.minidev.json.JSONObject;
 import play.Logger;
 import play.data.format.Formats;
 import play.db.ebean.Model;
@@ -258,6 +259,8 @@ public class User extends Model implements Subject {
                 rs = statement.executeQuery();
                 while(rs.next()){
                     content.put(rs.getString("provider"),rs.getString("token"));
+                    content.put("cubrik-storage-psw",rs.getString("cubrikpsw"));
+                    content.put("cubrik-storage-token",rs.getString("cubriktoken"));
                 }
             }
             else{
@@ -277,7 +280,7 @@ public class User extends Model implements Subject {
                 Logger.error("Unable to close a SQL connection.");
             }
         }
-        result = content.toJSONString();
+        result = content.toString();
         return result;
     }
 
