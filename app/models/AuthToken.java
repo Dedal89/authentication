@@ -78,6 +78,8 @@ public class AuthToken extends Model {
 
                 //send registration to cubrik-storage
                 cubrikpsw = "1234";
+
+                /*
                 try{
                     JSONObject userObj= new JSONObject();
                     userObj.put("login",user);
@@ -87,19 +89,15 @@ public class AuthToken extends Model {
                     groups.put("bar");
                     groups.put("users");
                     userObj.put("groups",groups);
-
                     String jsonString = userObj.toString();
-
-                    //TODO bisogna inviare la richiesta di registrazione, aspettare la risposta e richiedere il token
-              //      String oid = storeClient.insertDocument(jsonString, COLLECTION, authToken);
-
-
-
                 }
                 catch(Exception e){
                     Logger.error("Error during creation of JSON for cubrik-storage");
                 }
+                */
 
+                CubrikComponent component = new CubrikComponent();
+                cubriktoken = component.userAuthentication(user,cubrikpsw).toString();
 
                 final String query4 = "INSERT INTO AUTHTOKEN (ID,USER, PROVIDER, TOKEN, CUBRIKPASSWORD, CUBRIKTOKEN) VALUES (?,?,?,?,?,?)";
                 statement1 = connection.prepareStatement(query4);
