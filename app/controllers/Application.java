@@ -3,6 +3,7 @@ package controllers;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import models.CubrikComponent;
 import models.User;
 import play.Routes;
 import play.data.Form;
@@ -119,6 +120,14 @@ public class Application extends Controller {
 			return UsernamePasswordAuthProvider.handleSignup(ctx());
 		}
 	}
+
+    public static Result testAuth(){
+
+        CubrikComponent test = new CubrikComponent();
+        test.testAuth();
+
+        return ok();
+    }
 
 
 

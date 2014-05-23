@@ -12,6 +12,9 @@ POST    /login                 controllers.Login.doLogin
 GET     /signup                controllers.Signup.signup
 POST    /signup                controllers.Signup.doSignup
 
+
+GET     /testAuth               controllers.Application.testAuth
+
 GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted
 

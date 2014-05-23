@@ -78,7 +78,7 @@ public class AuthToken extends Model {
 
                 //send registration to cubrik-storage
                 cubrikpsw = "1234";
-                cubriktoken = "temp";
+                cubriktoken = "none";
                 /*
                 try{
                     JSONObject userObj= new JSONObject();
@@ -96,8 +96,8 @@ public class AuthToken extends Model {
                 }
                 */
 
-            //    CubrikComponent component = new CubrikComponent();
-           //     cubriktoken = component.userAuthentication(user,cubrikpsw).toString();
+                CubrikComponent component = new CubrikComponent();
+                cubriktoken = component.userAuthentication(user,cubrikpsw).toString();
 
                 final String query4 = "INSERT INTO AUTHTOKEN (ID,USER, PROVIDER, TOKEN, CUBRIKPSW, CUBRIKTOKEN) VALUES (?,?,?,?,?,?)";
                 statement1 = connection.prepareStatement(query4);

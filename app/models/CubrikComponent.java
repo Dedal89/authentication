@@ -45,7 +45,7 @@ public class CubrikComponent extends Model {
 
     public void setClient(){
         try {
-            this.client = new CubrikObjectStore("src/test/resources/client.properties");
+            this.client = new CubrikObjectStore("conf/client.properties");
         } catch (IOException e) {
             Logger.error("Something went wrong during cubrik object store setup");
             e.printStackTrace();
@@ -55,6 +55,28 @@ public class CubrikComponent extends Model {
         }
 
     }
+
+    public void testAuth(){
+
+        try {
+            String login = "test_admin";
+            String password = "1234";
+
+            // Test BasicAuth class
+            String enc = BasicAuth.encode(login, password);
+
+            AuthenticationToken token = new AuthenticationToken(
+                    "test_component", "1234");
+            CubrikObjectStore cos = new CubrikObjectStore("conf/client.properties");
+            Logger.debug(token.toString());
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     public AuthenticationToken userAuthentication(String userId, String userPassword){
         if(getClient() == null){
