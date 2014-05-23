@@ -8,6 +8,8 @@ create table authToken (
   user                      varchar(255),
   provider                  varchar(255),
   token                     varchar(255),
+  cubrikpsw                 varchar(255),
+  cubriktoken               varchar(255),
   constraint pk_authToken primary key (id))
 ;
 
