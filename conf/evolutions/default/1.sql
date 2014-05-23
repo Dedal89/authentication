@@ -47,7 +47,6 @@ create table users (
   main_interests            varchar(255),
   business_dimension        varchar(255),
   city                      varchar(255),
-  accessibility             boolean,
   first_name                varchar(255),
   last_name                 varchar(255),
   nation                    varchar(255),

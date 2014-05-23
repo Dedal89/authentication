@@ -19,7 +19,6 @@ public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
     private String mainInterests;
     private String businessDimension;
     private String city;
-    private boolean accessibility;
 
 
 	public MyUsernamePasswordAuthUser(final MySignup signup) {
@@ -30,7 +29,6 @@ public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
         this.mainInterests = signup.mainInterests;
         this.businessDimension = signup.businessDimension;
         this.city = signup.city;
-        this.accessibility = signup.accessibility;
 	}
 
 	/**
@@ -66,10 +64,6 @@ public class MyUsernamePasswordAuthUser extends UsernamePasswordAuthUser
 
     public String getCity() {
         return city;
-    }
-
-    public boolean getAccessibility() {
-        return accessibility;
     }
 
 }

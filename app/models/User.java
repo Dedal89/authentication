@@ -59,8 +59,6 @@ public class User extends Model implements Subject {
     public String businessDimension;
     public String city;
 
-    public boolean accessibility;
-
 	public String firstName;
 
 	public String lastName;
@@ -214,8 +212,6 @@ public class User extends Model implements Subject {
             user.businessDimension = identity.getBusinessDimension();
             user.mainInterests = identity.getMainInterests();
             user.city = identity.getCity();
-            user.accessibility = identity.getAccessibility();
-
         }
 
 
@@ -247,7 +243,6 @@ public class User extends Model implements Subject {
                 content.put("mainInterests",rs.getString("main_interests"));
                 content.put("businessDimensions",rs.getString("business_dimension"));
                 content.put("city",rs.getString("city"));
-                content.put("accessibility",rs.getBoolean("accessibility"));
                 content.put("firstname",rs.getString("first_name"));
                 content.put("lastname",rs.getString("last_name"));
                 content.put("country",rs.getString("nation"));
