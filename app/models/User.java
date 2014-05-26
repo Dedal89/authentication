@@ -286,7 +286,8 @@ public class User extends Model implements Subject {
         ResultSet rs;
         try {
             connection = DB.getConnection();
-            final String query = "SELECT * FROM USERS";
+         //   final String query = "SELECT * FROM USERS";
+            final String query = "SELECT id FROM USERS";
             statement = connection.createStatement();
             rs = statement.executeQuery(query);
             if(rs.isBeforeFirst()){
