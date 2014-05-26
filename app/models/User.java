@@ -21,14 +21,13 @@ import play.db.ebean.Model;
 import providers.MyUsernamePasswordAuthUser;
 
 import play.db.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
+import java.sql.*;
+
+import java.util.Date;
 import java.util.Random;
 
 import javax.persistence.*;
-import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -276,6 +275,59 @@ public class User extends Model implements Subject {
             }
         }
         result = content.toString();
+        return result;
+    }
+
+    public String retrieveAllUser(){
+        String result = "";
+        JSONArray payload = new JSONArray();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs;
+        try {
+            connection = DB.getConnection();
+            final String query = "SELECT * FROM USERS";
+            statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            if(rs.isBeforeFirst()){
+                while(rs.next()) {
+                    JSONObject content = new JSONObject();
+                    content.put("id", rs.getString("id"));
+               //     content.put("email",rs.getString("email"));
+               //     content.put("name",rs.getString("name"));
+               //     content.put("companyName",rs.getString("company_name"));
+               //     content.put("mainInterests",rs.getString("main_interests"));
+               //     content.put("businessDimensions",rs.getString("business_dimension"));
+               //     content.put("city",rs.getString("city"));
+               //     content.put("firstname",rs.getString("first_name"));
+               //     content.put("lastname",rs.getString("last_name"));
+               //     content.put("country",rs.getString("nation"));
+                    payload.put(content);
+                }
+                rs.close();
+                statement.close();
+            }
+            else{
+                JSONObject content = new JSONObject();
+                content.put("error","there is no user with id: "+id);
+                payload.put(content);
+            }
+        }
+        catch(Exception e){
+            Logger.error("Error during connection for retrieving all user data.");
+        }
+        finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                Logger.error("Unable to close a SQL connection.");
+            }
+        }
+
+        result = payload.toString();
         return result;
     }
 

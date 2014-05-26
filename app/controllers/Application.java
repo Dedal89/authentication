@@ -65,6 +65,18 @@ public class Application extends Controller {
         }
     }
 
+    public static Result retrieveAllUser(){
+        try{
+            User user = new User();
+            String userData = user.retrieveAllUser();
+            response().setContentType("application/json");
+            return ok(userData);
+        }
+        catch (Exception e){
+            return internalServerError();
+        }
+    }
+
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result profile() {
 		final User localUser = getLocalUser(session());
