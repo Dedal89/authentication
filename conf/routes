@@ -12,6 +12,13 @@ POST    /login                 controllers.Login.doLogin
 GET     /signup                controllers.Signup.signup
 POST    /signup                controllers.Signup.doSignup
 
+GET     /signupfashion         controllers.Signup.signupFashion
+GET     /signuphistograph      controllers.Signup.signupHistoGraph
+
+
+
+POST    /modifyjobposition      controllers.Account.modifyJobPosition()
+
 
 GET     /testAuth               controllers.Application.testAuth
 

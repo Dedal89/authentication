@@ -1,0 +1,125 @@
+@(signupForm: Form[_])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("playauthenticate.signup.title"),"signup") {
+
+<div class="row">
+    <div class="span6">
+        <h1>@Messages("playauthenticate.signup.title")</h1>
+    </div>
+</div>
+
+        <h1>
+            HISTO GRAPH
+        </h1>
+<input type="hidden" id="getCode" value="H">
+
+<div id="signup" class="row">
+
+    <div class="span3">
+        @* Display proprietary login form *@
+        @helper.form(routes.Application.doSignup) {
+
+        @if(signupForm.hasGlobalErrors) {
+        <p class="error">
+            <span class="label label-important">@signupForm.globalError.message</span>
+        </p>
+        }
+
+        @inputText(
+        signupForm("appCode"),
+        'id -> "appCode",
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("name"),
+        '_label -> Messages("playauthenticate.signup.name")
+        )
+
+        @inputText(
+        signupForm("affiliation"),
+        '_label -> "Affiliation"
+        )
+
+        @inputText(
+        signupForm("country"),
+        '_label -> "Country"
+        )
+
+        @helper.select(
+        signupForm("fieldOfExpertise"),
+        options(
+            " European studies " -> " European studies ",
+            " Contemporary history " -> " Contemporary history ",
+            " Economics " -> " Economics ",
+            " Political science " -> " Political science ",
+            " Digital humanities " -> " Digital humanities ",
+            " Media " -> " Media ",
+            " Digital archives " -> " Digital archives ",
+            " Cultural heritage " -> " Cultural heritage ",
+            " Digital libraries " -> " Digital libraries ",
+            " e-research " -> " e-research ",
+            " Iconographic documentation " -> " Iconographic documentation ",
+            " -- other -- " -> " -- other -- "),
+        'id -> "fieldOfExpertise",
+        '_label -> "Field of expertise",
+        '_default -> "-- Select expertise --"
+        )
+
+        @inputText(
+        signupForm("otherField"),
+        'id -> "otherFieldOfExpertise",
+        'disabled -> "disabled",
+        '_label -> "Other"
+        )
+
+        @inputText(
+        signupForm("yearsOfExperience"),
+        'type -> "number",
+        'min -> 0,
+        '_label -> "Years of experience in your field of expertise"
+        )
+
+        @_emailPartial(signupForm)
+
+        @_passwordPartial(signupForm)
+
+        @checkbox(
+        signupForm("showMail"),
+        'checked -> "checked",
+        '_label -> "Show e-mail address to other users"
+        )
+
+        <input type="submit" value="@Messages("playauthenticate.signup.now")" class="btn btn-primary">
+
+
+        @inputText(
+        signupForm("companyName"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("businessDimension"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("city"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+
+        }
+    </div>
+
+
+</div>
+
+}

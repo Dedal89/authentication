@@ -95,25 +95,28 @@ public class MyUsernamePasswordAuthProvider
 		@MinLength(5)
 		public String repeatPassword;
 
-		@Required
+
 		public String name;
 
-        @Required
-        public String nation;
+        public String country;
 
-        @Required
         public String city;
 
-        @Required
         public String companyName;
 
-        @Required
+        public String affiliation;
+
         public String businessDimension;
 
-        @Required
-        public String mainInterests;
+        public String fieldOfExpertise;
 
-        public boolean accessibility;
+        public String otherFieldOfExpertise;
+
+        public Integer yearOfExperience;
+
+        public Boolean showMail;
+
+        public String appCode;
 
 
 		public String validate() {

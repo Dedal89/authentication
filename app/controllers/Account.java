@@ -1,5 +1,6 @@
 package controllers;
 
+import models.OtherUserInfo;
 import models.User;
 import be.objectify.deadbolt.java.actions.Restrict;
 import be.objectify.deadbolt.java.actions.Group;
@@ -14,10 +15,16 @@ import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
 import play.i18n.Messages;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthUser;
 import views.html.account.*;
+import views.html.profile;
+import views.html.profileFashion;
+import views.html.profileHistoGraph;
+
+import java.util.Map;
 
 import static play.data.Form.form;
 
@@ -82,11 +89,32 @@ public class Account extends Controller {
         public String getNickname(){
             return nickname;
         }
-        public void setNickname(String nuovoNome){
-            this.nickname = nuovoNome;
+        public void setNickname(String name){
+            this.nickname = name;
         }
 
     }
+    public static User getLocalUser(final Http.Session session) {
+        final AuthUser currentAuthUser = PlayAuthenticate.getUser(session);
+        final User localUser = User.findByAuthUserIdentity(currentAuthUser);
+        return localUser;
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyJobPosition() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String job = values.get("jobPosition")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setJobPosition(job);
+
+
+            return redirect(routes.Application.restricted());
+
+    }
+
 
 	private static final Form<Accept> ACCEPT_FORM = form(Accept.class);
 	private static final Form<Account.PasswordChange> PASSWORD_CHANGE_FORM = form(Account.PasswordChange.class);
@@ -165,7 +193,7 @@ public class Account extends Controller {
     }
 
     @Restrict(@Group(Application.USER_ROLE))
-    public static Result doChangeNickname() {
+    public static Result doChangeNickname() throws Exception{
         com.feth.play.module.pa.controllers.Authenticate.noCache(response());
         final Form<NicknameChange> filledForm = NICKNAME_CHANGE_FORM.bindFromRequest();
         if (filledForm.hasErrors()) {

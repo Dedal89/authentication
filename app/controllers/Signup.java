@@ -14,6 +14,8 @@ import providers.MyUsernamePasswordAuthProvider.MyIdentity;
 import providers.MyUsernamePasswordAuthUser;
 import views.html.account.signup.*;
 import views.html.signup;
+import views.html.signupFashion;
+import views.html.signupHistoGraph;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 
@@ -47,12 +49,20 @@ public class Signup extends Controller {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 
 
-        return ok(unverified.render());
+        return ok(views.html.account.signup.unverified.render());
 
 	}
 
     public static Result  signup(){
         return ok(signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
+    }
+
+    public static Result  signupFashion(){
+        return ok(signupFashion.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
+    }
+
+    public static Result  signupHistoGraph(){
+        return ok(signupHistoGraph.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
     }
 
     public static Result doSignup() {

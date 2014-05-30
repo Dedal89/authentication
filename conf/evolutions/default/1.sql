@@ -21,6 +21,20 @@ create table linked_account (
   constraint pk_linked_account primary key (id))
 ;
 
+create table otherUserInfo (
+  id                        bigint not null,
+  user                      varchar(255),
+  job_position              varchar(255),
+  main_interests            varchar(255),
+  area_of_specialization    varchar(255),
+  your_linkedin             varchar(255),
+  your_researcher_gate      varchar(255),
+  company_homepage          varchar(255),
+  your_homepage             varchar(255),
+  about                     varchar(255),
+  constraint pk_otherUserInfo primary key (id))
+;
+
 create table security_role (
   id                        bigint not null,
   role_name                 varchar(255),
@@ -44,12 +58,16 @@ create table users (
   email                     varchar(255),
   name                      varchar(255),
   company_name              varchar(255),
-  main_interests            varchar(255),
+  affiliation               varchar(255),
   business_dimension        varchar(255),
   city                      varchar(255),
+  field_of_expertise        varchar(255),
   first_name                varchar(255),
+  year_of_experience        integer,
   last_name                 varchar(255),
-  nation                    varchar(255),
+  show_mail                 boolean,
+  app_code                  varchar(255),
+  country                   varchar(255),
   last_login                timestamp,
   active                    boolean,
   email_validated           boolean,
@@ -77,6 +95,8 @@ create table users_user_permission (
 create sequence authToken_seq;
 
 create sequence linked_account_seq;
+
+create sequence otherUserInfo_seq;
 
 create sequence security_role_seq;
 
@@ -109,6 +129,8 @@ drop table if exists authToken;
 
 drop table if exists linked_account;
 
+drop table if exists otherUserInfo;
+
 drop table if exists security_role;
 
 drop table if exists token_action;
@@ -126,6 +148,8 @@ SET REFERENTIAL_INTEGRITY TRUE;
 drop sequence if exists authToken_seq;
 
 drop sequence if exists linked_account_seq;
+
+drop sequence if exists otherUserInfo_seq;
 
 drop sequence if exists security_role_seq;
 

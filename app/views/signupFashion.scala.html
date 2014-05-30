@@ -1,0 +1,112 @@
+@(signupForm: Form[_])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("playauthenticate.signup.title"),"signup") {
+
+<div class="row">
+    <div class="span6">
+        <h1>@Messages("playauthenticate.signup.title")</h1>
+    </div>
+</div>
+
+        <h1>
+            FASHION
+        </h1>
+<input type="hidden" id="getCode" value="F">
+
+
+<div id="signup" class="row">
+
+    <div class="span3">
+        @* Display proprietary login form *@
+        @helper.form(routes.Application.doSignup) {
+
+        @if(signupForm.hasGlobalErrors) {
+        <p class="error">
+            <span class="label label-important">@signupForm.globalError.message</span>
+        </p>
+        }
+
+        @inputText(
+        signupForm("appCode"),
+        'id -> "appCode",
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("name"),
+        '_label -> Messages("playauthenticate.signup.name")
+        )
+
+        @inputText(
+        signupForm("companyName"),
+        '_label -> "Company Name"
+        )
+
+        @helper.select(
+        signupForm("businessDimension"),
+        options(
+        " < 50 " -> " < 50 ",
+        " 50 - 250 " -> " 50 - 250 ",
+        " > 250 " -> " > 250 "),
+        '_label -> "Business dimension (numbers of employers)",
+        '_default -> "-- Select dimension --"
+        )
+
+        @inputText(
+        signupForm("country"),
+        '_label -> "Country"
+        )
+
+        @inputText(
+        signupForm("city"),
+        '_label -> "City"
+        )
+
+        @_emailPartial(signupForm)
+
+        @_passwordPartial(signupForm)
+
+        <input type="submit" value="@Messages("playauthenticate.signup.now")" class="btn btn-primary">
+
+        @inputText(
+        signupForm("affiliation"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("fieldOfExpertise"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("otherField"),
+        'id -> "otherFieldOfExpertise",
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("yearsOfExperience"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        @inputText(
+        signupForm("showMail"),
+        'type -> "hidden",
+        '_label -> ""
+        )
+
+        }
+    </div>
+
+
+</div>
+
+}

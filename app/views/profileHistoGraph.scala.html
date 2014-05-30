@@ -1,0 +1,68 @@
+@(localUser: models.User = null, otherUserInfo: models.OtherUserInfo = null)
+
+@import com.feth.play.module.pa.views.html._
+
+@main(Messages("playauthenticate.profile.title"),"profile") {
+
+<h1>@Messages("playauthenticate.profile.title")</h1>
+
+        <h1>
+            HISTO GRAPH
+        </h1>
+<p>
+    Your name is @localUser.name and your email address is @if(!localUser.email) {<em>&lt;unknown&gt;</em>.} else {
+    @localUser.email.
+    <i>
+        @if(!localUser.emailValidated && localUser.email) {
+        (<a href="@routes.Account.verifyEmail">unverified - click to verify</a>)
+        } else {
+        (verified)
+        }</i>
+    }
+    <br />
+    Your first name is @localUser.firstName and your last name is @localUser.lastName
+    <br/>
+    @defining(localUser.getProviders()) { providers =>
+    @if(providers.size() > 0) {
+    @if(providers.size() ==1) {
+    @Messages("playauthenticate.profile.providers_one")
+    } else {
+    @Messages("playauthenticate.profile.providers_many",providers.size().toString())
+    }
+    @for(p <- providers) {
+    @_providerIcon(p)
+    }
+    <br/>
+    }
+    }
+
+    <br/>
+    @currentAuth() { auth =>
+    @Messages("playauthenticate.profile.logged") @_providerIcon(auth.getProvider())<br/>
+    @if(auth.expires() != -1){
+    @Messages("playauthenticate.profile.session", auth.getId(), Application.formatTimestamp(auth.expires()))
+    } else {
+    @Messages("playauthenticate.profile.session_endless", auth.getId())
+    }
+    }
+    <br/>
+<ul>
+    <li><a href="@routes.Account.link()">@Messages("playauthenticate.navigation.link_more")</a></li>
+    <li><a href="@routes.Account.changePassword">@Messages("playauthenticate.profile.password_change")</a></li>
+    <li><a href="@routes.Account.changeNickname">@Messages("playauthenticate.profile.name_change")</a></li>
+</ul>
+<div>
+    <span>Job Position: @otherUserInfo.jobPosition</span><br/>
+    <span>Area of specialization: @otherUserInfo.areaOfSpecialization</span><br/>
+    <span>Linkedin: @otherUserInfo.yourLinkedin</span><br/>
+    <span>Resercher Gate: @otherUserInfo.yourResearcherGate</span><br/>
+    <span>My homepage: @otherUserInfo.yourHomepage</span><br/>
+    <span>About me: @otherUserInfo.about</span><br/>
+</div>
+<br/>
+<br/>
+<form method="get" action="redirectto">
+    <input type="submit" class="btn btn-primary" value="Go to your website">
+</form>
+</p>
+}

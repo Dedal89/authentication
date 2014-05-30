@@ -54,16 +54,17 @@ public class User extends Model implements Subject {
 	public String name;
 
     public String companyName;
-    public String mainInterests;
+    public String affiliation;
     public String businessDimension;
     public String city;
-
+    public String fieldOfExpertise;
 	public String firstName;
-
+    public int yearOfExperience;
 	public String lastName;
+    public boolean showMail;
+    public String appCode;
 
-
-    public String nation;
+    public String country;
 
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -206,11 +207,15 @@ public class User extends Model implements Subject {
             user.emailValidated = false;
             user.name = identity.getName();
 
-            user.nation = identity.getNation();
+            user.country = identity.getCountry();
             user.companyName = identity.getCompanyName();
+            user.affiliation = identity.getAffiliation();
             user.businessDimension = identity.getBusinessDimension();
-            user.mainInterests = identity.getMainInterests();
             user.city = identity.getCity();
+            user.fieldOfExpertise = identity.getFieldOfExpertise();
+            user.yearOfExperience = identity.getYearOfExperience();
+            user.showMail = identity.getShowMail();
+            user.appCode = identity.getAppCode();
         }
 
 
@@ -218,6 +223,8 @@ public class User extends Model implements Subject {
 		user.save();
 		user.saveManyToManyAssociations("roles");
 		// user.saveManyToManyAssociations("permissions");
+        OtherUserInfo otherInfo = new OtherUserInfo();
+        otherInfo.createInfo(user.getIdentifier());
 		return user;
 	}
 
@@ -239,12 +246,16 @@ public class User extends Model implements Subject {
                 content.put("email",rs.getString("email"));
                 content.put("name",rs.getString("name"));
                 content.put("companyName",rs.getString("company_name"));
-                content.put("mainInterests",rs.getString("main_interests"));
+                content.put("affiliation",rs.getString("affiliation"));
                 content.put("businessDimensions",rs.getString("business_dimension"));
                 content.put("city",rs.getString("city"));
                 content.put("firstname",rs.getString("first_name"));
                 content.put("lastname",rs.getString("last_name"));
-                content.put("country",rs.getString("nation"));
+                content.put("country",rs.getString("country"));
+                content.put("fieldOfExpertise", rs.getString("field_of_expertise"));
+                content.put("yearOfExperience", rs.getInt("year_of_experience"));
+                content.put("showMail", rs.getBoolean("show_mail"));
+                content.put("appCode", rs.getString("app_code"));
                 rs.close();
                 statement.close();
                 final String query1 = "SELECT * FROM AUTHTOKEN WHERE USER=?";
@@ -332,55 +343,97 @@ public class User extends Model implements Subject {
         return result;
     }
 
-    public String checkNickname(String nickname){
+    public String checkNickname(String nickname) {
+        Logger.debug("USER","Checking if the nickname is already been used: "
+                + nickname);
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        try {
+            connection = DB.getConnection();
 
-        try{
-            Connection connection = DB.getConnection();
-
-            String query = "SELECT * FROM USERS WHERE NAME=? ";
-            PreparedStatement statement = connection.prepareStatement(query);
+            final String query = "SELECT * FROM USERS WHERE NAME=? ";
+            statement = connection.prepareStatement(query);
             statement.setString(1, nickname);
-            ResultSet rs = statement.executeQuery();
+            rs = statement.executeQuery();
 
-            if(rs.isBeforeFirst()){
-                Random randomGeneretor = new Random();
+            if (rs.isBeforeFirst()) {
+                // a user already exists with the same nickname, changing the
+                // new nickname
+
+                Logger.debug("USER","A user already exists with the same nickname, changing the new nickname: "
+                        + nickname);
+                final Random randomGeneretor = new Random();
                 int n = randomGeneretor.nextInt(5000);
-                int n2 = randomGeneretor.nextInt(5000);
+                final int n2 = randomGeneretor.nextInt(5000);
                 n = n + n2;
-                String ns = Integer.toString(n);
-                nickname=  nickname+ns;
+                final String ns = Integer.toString(n);
+                nickname = nickname + ns;
+                Logger.debug("USER","New Nickname: " + nickname);
+                checkNickname(nickname);
+            }
+
+        } catch (final SQLException ex) {
+            // FIXME!!! se non sono riuscito a verificare il nickname devo fare
+            // qualcosa!!!!!
+            Logger.error("Unable to verify nickname: " + nickname, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                Logger.error("Unable to close a SQL connection.",e);
             }
 
         }
-        catch(SQLException ex){
-
-        }
-
 
         return nickname;
     }
 
-    public boolean checkMail(String email){
+    public static boolean checkMail(final String email) {
+        Logger.debug("USER","Checking if the mail already exists: " + email);
 
-        try{
-            Connection connection = DB.getConnection();
+        Boolean mailExists = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        try {
+            connection = DB.getConnection();
 
-            String query = "SELECT * FROM USERS WHERE EMAIL=? ";
-            PreparedStatement statement = connection.prepareStatement(query);
+            final String query = "SELECT * FROM USERS WHERE EMAIL=? ";
+            statement = connection.prepareStatement(query);
             statement.setString(1, email);
-            ResultSet rs = statement.executeQuery();
+            rs = statement.executeQuery();
 
-            if(rs.isBeforeFirst()){
-                return true;
+            if (rs.isBeforeFirst()) {
+                Logger.debug("USER","A user has already been registered with the email: "
+                        + email);
+                mailExists = true;
             }
 
+        } catch (final SQLException ex) {
+            Logger.error("Unable to check the email: " + email, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                Logger.error("Unable to close a SQL connection.",e);
+            }
         }
-        catch(SQLException ex){
-
-        }
-
-
-        return false;
+        return mailExists;
     }
 
 	public static void merge(final AuthUser oldUser, final AuthUser newUser) {
@@ -445,36 +498,48 @@ public class User extends Model implements Subject {
 		a.save();
 	}
 
-    public void changeNickname(final UsernamePasswordAuthUser authUser,String newNick) {
+    public void changeNickname(final UsernamePasswordAuthUser authUser,
+                               String newNick) throws Exception {
 
-              LinkedAccount a = this.getAccountByProvider(authUser.getProvider());
+        LinkedAccount a = this.getAccountByProvider(authUser.getProvider());
 
-              if (a == null) {
+        if (a == null) {
 
-                    a = LinkedAccount.create(authUser);
-                    a.user = this;
+            a = LinkedAccount.create(authUser);
+            a.user = this;
 
-              }
+        }
 
-              Long tempo = a.user.id;
-              String utente = Long.toString(tempo);
+        final Long tempo = a.user.id;
+        final String utente = Long.toString(tempo);
 
-              newNick = checkNickname(newNick);
+        newNick = checkNickname(newNick);
 
-              try{
-              Connection connection = DB.getConnection();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = DB.getConnection();
 
-              String query = "UPDATE USERS SET NAME = ? WHERE ID = ? ";
-              PreparedStatement statement = connection.prepareStatement(query);
-              statement.setString(1, newNick);
-              statement.setString(2, utente);
-              statement.executeUpdate();
+            final String query = "UPDATE USERS SET NAME = ? WHERE ID = ? ";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, newNick);
+            statement.setString(2, utente);
+            statement.executeUpdate();
 
-              }
-              catch(SQLException ex){
+        } catch (final SQLException ex) {
+            Logger.error("Unable to change nickname for user: " + utente,ex);
+            throw new Exception("Unable to change nickname for user: " + utente);
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
 
-              }
-
+                if (connection != null)
+                    connection.close();
+            } catch (final SQLException e) {
+                Logger.error("Unable to close a SQL connection.",e);
+            }
+        }
     }
 
 	public void resetPassword(final UsernamePasswordAuthUser authUser,

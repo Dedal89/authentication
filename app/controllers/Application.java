@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import models.CubrikComponent;
+import models.OtherUserInfo;
 import models.User;
 import play.Routes;
 import play.data.Form;
@@ -43,7 +44,18 @@ public class Application extends Controller {
 	public static Result restricted(){
 		final User localUser = getLocalUser(session());
         session().put("userId", localUser.getIdentifier());
-        return ok(profile.render(localUser));
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+
+        if("H".equals(localUser.appCode)){
+            return ok(profileHistoGraph.render(localUser, otherUserInfo));
+        }
+        else if("F".equals(localUser.appCode)){
+            return ok(profileFashion.render(localUser, otherUserInfo));
+        }
+        else {
+            return ok(profile.render(localUser, otherUserInfo));
+        }
 	}
 
     @Restrict(@Group(Application.USER_ROLE))
@@ -80,7 +92,9 @@ public class Application extends Controller {
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result profile() {
 		final User localUser = getLocalUser(session());
-		return ok(profile.render(localUser));
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        return ok(profile.render(localUser, otherUserInfo));
 	}
 
 	public static Result login() {
