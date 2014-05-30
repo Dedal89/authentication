@@ -139,37 +139,30 @@ public class OtherUserInfo extends Model{
         updateInfo();
     }
     public void setMainInterests(String mainInterests){
-        loadInfo(this.user);
         this.mainInterests = mainInterests;
         updateInfo();
     }
     public void setAreaOfSpecialization(String areaOfSpecialization){
-        loadInfo(this.user);
         this.areaOfSpecialization = areaOfSpecialization;
         updateInfo();
     }
     public void setYourLinkedin(String yourLinkedin){
-        loadInfo(this.user);
         this.yourLinkedin = yourLinkedin;
         updateInfo();
     }
     public void setYourResearcherGate(String yourResearcherGate){
-        loadInfo(this.user);
         this.yourResearcherGate = yourResearcherGate;
         updateInfo();
     }
     public void setCompanyHomepage(String companyHomepage){
-        loadInfo(this.user);
         this.companyHomepage = companyHomepage;
         updateInfo();
     }
     public void setYourHomepage(String yourHomepage){
-        loadInfo(this.user);
         this.yourHomepage = yourHomepage;
         updateInfo();
     }
     public void setAbout(String about){
-        loadInfo(this.user);
         this.about = about;
         updateInfo();
     }
