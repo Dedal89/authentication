@@ -106,12 +106,117 @@ public class Account extends Controller {
         OtherUserInfo otherUserInfo = new OtherUserInfo();
         final Map<String, String[]> values = request().body()
                 .asFormUrlEncoded();
-        String job = values.get("jobPosition")[0];
+        String jobPosition = values.get("jobPosition")[0];
         otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setJobPosition(job);
+        otherUserInfo.setJobPosition(jobPosition);
 
 
             return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyMainInterests() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String mainInterests = values.get("mainInterests")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setMainInterests(mainInterests);
+
+
+        return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyAreaOfSpecialization() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String areaOfSpecialization = values.get("areaOfSpecialization")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setAreaOfSpecialization(areaOfSpecialization);
+
+
+        return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyYourLinkedin() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String yourLinkedin = values.get("yourLinkedin")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setYourLinkedin(yourLinkedin);
+
+
+        return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyYourResearcherGate() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String yourResearcherGate = values.get("yourResearcherGate")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setYourResearcherGate(yourResearcherGate);
+
+
+        return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyYourHomepage() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String yourHomepage = values.get("yourHomepage")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setYourHomepage(yourHomepage);
+
+
+        return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyCompanyHomepage() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String companyHomepage = values.get("companyHomepage")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setCompanyHomepage(companyHomepage);
+
+
+        return redirect(routes.Application.restricted());
+
+    }
+
+    @Restrict(@Group(Application.USER_ROLE))
+    public static Result modifyAbout() {
+        final User localUser = getLocalUser(session());
+        OtherUserInfo otherUserInfo = new OtherUserInfo();
+        final Map<String, String[]> values = request().body()
+                .asFormUrlEncoded();
+        String about = values.get("about")[0];
+        otherUserInfo.loadInfo(localUser.getIdentifier());
+        otherUserInfo.setAbout(about);
+
+
+        return redirect(routes.Application.restricted());
 
     }
 

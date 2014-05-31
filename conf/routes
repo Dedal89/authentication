@@ -18,6 +18,14 @@ GET     /signuphistograph      controllers.Signup.signupHistoGraph
 
 
 POST    /modifyjobposition      controllers.Account.modifyJobPosition()
+POST    /modifymaininterests      controllers.Account.modifyMainInterests()
+POST    /modifycompanyhomepage      controllers.Account.modifyCompanyHomepage()
+POST    /modifyareaofspecialization      controllers.Account.modifyAreaOfSpecialization()
+POST    /modifyyourlinkedin      controllers.Account.modifyYourLinkedin()
+POST    /modifyyourresearchergate      controllers.Account.modifyYourResearcherGate()
+POST    /modifyyourhomepage      controllers.Account.modifyYourHomepage()
+POST    /modifyabout      controllers.Account.modifyAbout()
+
 
 
 GET     /testAuth               controllers.Application.testAuth

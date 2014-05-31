@@ -52,12 +52,12 @@
     <li><a href="@routes.Account.changeNickname">@Messages("playauthenticate.profile.name_change")</a></li>
 </ul>
 <div>
-    <span>Job Position: @otherUserInfo.jobPosition</span><br/>
-    <span>Area of specialization: @otherUserInfo.areaOfSpecialization</span><br/>
-    <span>Linkedin: @otherUserInfo.yourLinkedin</span><br/>
-    <span>Resercher Gate: @otherUserInfo.yourResearcherGate</span><br/>
-    <span>My homepage: @otherUserInfo.yourHomepage</span><br/>
-    <span>About me: @otherUserInfo.about</span><br/>
+    <span>Job Position: @otherUserInfo.jobPosition</span><form method="post" action="@routes.Account.modifyJobPosition()"><input type="text" name="jobPosition"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
+    <span>Area of specialization: @otherUserInfo.areaOfSpecialization</span><form method="post" action="@routes.Account.modifyAreaOfSpecialization()"><input type="text" name="areaOfSpecialization"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
+    <span>Linkedin: @otherUserInfo.yourLinkedin</span><form method="post" action="@routes.Account.modifyYourLinkedin()"><input type="text" name="yourLinkedin"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
+    <span>Resercher Gate: @otherUserInfo.yourResearcherGate</span><form method="post" action="@routes.Account.modifyYourResearcherGate()"><input type="text" name="yourResearcherGate"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
+    <span>My homepage: @otherUserInfo.yourHomepage</span><form method="post" action="@routes.Account.modifyYourHomepage()"><input type="text" name="yourHomepage"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
+    <span>About me: @otherUserInfo.about</span><form method="post" action="@routes.Account.modifyAbout()"><input type="text" name="about"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
 </div>
 <br/>
 <br/>

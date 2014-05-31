@@ -54,8 +54,8 @@
 
         <div>
             <span>Job position: @otherUserInfo.jobPosition</span><form method="post" action="@routes.Account.modifyJobPosition()"><input type="text" name="jobPosition"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
-            <span>Main area of interests: @otherUserInfo.mainInterests</span><br/>
-            <span>My company homepage: @otherUserInfo.companyHomepage</span><br/>
+            <span>Main area of interests: @otherUserInfo.mainInterests</span><form method="post" action="@routes.Account.modifyMainInterests()"><input type="text" name="mainInterests"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
+            <span>My company homepage: @otherUserInfo.companyHomepage</span><form method="post" action="@routes.Account.modifyCompanyHomepage()"><input type="text" name="companyHomepage"><input type="submit" value="Save" class="btn btn-primary"></form><br/>
         </div>
 
 
