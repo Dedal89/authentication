@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.*;
+import org.json.JSONObject;
 
 /**
  * Created by Riboni1989 on 30/05/14.
@@ -42,11 +43,11 @@ public class OtherUserInfo extends Model{
         info.save();
     }
 
-    public void loadInfo(String user){
+    public JSONObject loadInfo(String user){
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet rs;
-
+        JSONObject content = new JSONObject();
         try{
             connection = DB.getConnection();
             final String query = "SELECT * FROM OTHERUSERINFO WHERE USER=?";
@@ -66,6 +67,16 @@ public class OtherUserInfo extends Model{
                 this.companyHomepage = rs.getString("company_homepage");
                 this.yourHomepage = rs.getString("your_homepage");
                 this.about = rs.getString("about");
+                content.put("id",id);
+                content.put("user",user);
+                content.put("jobPosition",jobPosition);
+                content.put("mainInterests",mainInterests);
+                content.put("areaOfSpecialization",areaOfSpecialization);
+                content.put("yourLinkedin",yourLinkedin);
+                content.put("yourResearcherGate",yourResearcherGate);
+                content.put("companyHomepage",companyHomepage);
+                content.put("yourHomepage",yourHomepage);
+                content.put("about",about);
             }
             else{
                 this.id = null;
@@ -78,6 +89,16 @@ public class OtherUserInfo extends Model{
                 this.companyHomepage = "none";
                 this.yourHomepage = "none";
                 this.about = "none";
+                content.put("id",id);
+                content.put("user",user);
+                content.put("jobPosition",jobPosition);
+                content.put("mainInterests",mainInterests);
+                content.put("areaOfSpecialization",areaOfSpecialization);
+                content.put("yourLinkedin",yourLinkedin);
+                content.put("yourResearcherGate",yourResearcherGate);
+                content.put("companyHomepage",companyHomepage);
+                content.put("yourHomepage",yourHomepage);
+                content.put("about",about);
             }
         }
         catch(Exception e){
@@ -93,6 +114,7 @@ public class OtherUserInfo extends Model{
                 Logger.error("Unable to close a SQL connection.");
             }
         }
+        return content;
     }
 
     public void updateInfo() {

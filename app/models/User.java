@@ -53,18 +53,18 @@ public class User extends Model implements Subject {
 
 	public String name;
 
-    public String companyName;
-    public String affiliation;
-    public String businessDimension;
-    public String city;
-    public String fieldOfExpertise;
+        public String companyName;
+        public String affiliation;
+        public String businessDimension;
+        public String city;
+        public String fieldOfExpertise;
 	public String firstName;
-    public int yearOfExperience;
+        public int yearOfExperience;
 	public String lastName;
-    public boolean showMail;
-    public String appCode;
+        public boolean showMail;
+        public String appCode;
 
-    public String country;
+        public String country;
 
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -223,8 +223,8 @@ public class User extends Model implements Subject {
 		user.save();
 		user.saveManyToManyAssociations("roles");
 		// user.saveManyToManyAssociations("permissions");
-        OtherUserInfo otherInfo = new OtherUserInfo();
-        otherInfo.createInfo(user.getIdentifier());
+                OtherUserInfo otherInfo = new OtherUserInfo();
+                otherInfo.createInfo(user.getIdentifier());
 		return user;
 	}
 
@@ -256,6 +256,8 @@ public class User extends Model implements Subject {
                 content.put("yearOfExperience", rs.getInt("year_of_experience"));
                 content.put("showMail", rs.getBoolean("show_mail"));
                 content.put("appCode", rs.getString("app_code"));
+                //Save additional information regarding the user
+                content.put("otherUserInfo", new OtherUserInfo().loadInfo(id));
                 rs.close();
                 statement.close();
                 final String query1 = "SELECT * FROM AUTHTOKEN WHERE USER=?";
@@ -374,8 +376,7 @@ public class User extends Model implements Subject {
             }
 
         } catch (final SQLException ex) {
-            // FIXME!!! se non sono riuscito a verificare il nickname devo fare
-            // qualcosa!!!!!
+            // FIXME!!! If I was unable to verify the nickname I have to do something
             Logger.error("Unable to verify nickname: " + nickname, ex);
         } finally {
             try {
