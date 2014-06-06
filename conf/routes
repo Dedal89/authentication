@@ -29,6 +29,8 @@ POST    /modifyabout      controllers.Account.modifyAbout()
 
 
 GET     /testAuth               controllers.Application.testAuth
+GET     /token               controllers.Application.getToken(objID: String)
+GET     /object               controllers.Application.getCosObj(objID: String, userId: String)
 
 GET     /                           controllers.Application.index
 GET     /restricted                 controllers.Application.restricted

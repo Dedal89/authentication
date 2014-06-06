@@ -1,21 +1,28 @@
 package controllers;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import models.CubrikComponent;
 import models.OtherUserInfo;
 import models.User;
 import play.Routes;
 import play.data.Form;
-import play.mvc.*;
+import play.mvc.Controller;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
-
-import views.html.*;
+import views.html.index;
+import views.html.login;
+import views.html.profile;
+import views.html.profileFashion;
+import views.html.profileHistoGraph;
+import views.html.signup;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 
@@ -28,11 +35,10 @@ public class Application extends Controller {
 	public static final String FLASH_MESSAGE_KEY = "message";
 	public static final String FLASH_ERROR_KEY = "error";
 	public static final String USER_ROLE = "user";
-	
+
 	public static Result index() {
 		return ok(index.render());
 	}
-
 
 	public static User getLocalUser(final Session session) {
 		final AuthUser currentAuthUser = PlayAuthenticate.getUser(session);
@@ -41,66 +47,94 @@ public class Application extends Controller {
 	}
 
 	@Restrict(@Group(Application.USER_ROLE))
-	public static Result restricted(){
+	public static Result restricted() {
 		final User localUser = getLocalUser(session());
-        session().put("userId", localUser.getIdentifier());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        otherUserInfo.loadInfo(localUser.getIdentifier());
+		session().put("userId", localUser.getIdentifier());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		otherUserInfo.loadInfo(localUser.getIdentifier());
 
-        if("H".equals(localUser.appCode)){
-            return ok(profileHistoGraph.render(localUser, otherUserInfo));
-        }
-        else if("F".equals(localUser.appCode)){
-            return ok(profileFashion.render(localUser, otherUserInfo));
-        }
-        else {
-            return ok(profile.render(localUser, otherUserInfo));
-        }
+		if ("H".equals(localUser.appCode)) {
+			return ok(profileHistoGraph.render(localUser, otherUserInfo));
+		} else if ("F".equals(localUser.appCode)) {
+			return ok(profileFashion.render(localUser, otherUserInfo));
+		} else {
+			return ok(profile.render(localUser, otherUserInfo));
+		}
 	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result redirectTo(){
-        final User localUser = getLocalUser(session());
-        String redirectUrl = session().get("redirectTo");
-        return redirect("https://"+redirectUrl+"/?userId="+localUser.getIdentifier()+"&username="+localUser.name+"&email="+localUser.email);
-    }
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result redirectTo() {
+		final User localUser = getLocalUser(session());
+		final String redirectUrl = session().get("redirectTo");
+		return redirect("https://" + redirectUrl + "/?userId="
+				+ localUser.getIdentifier() + "&username=" + localUser.name
+				+ "&email=" + localUser.email);
+	}
 
-    public static Result retrieveUser(String token){
-        try{
-            User user = new User();
-            String userData = user.retrieveUser(token);
-            response().setContentType("application/json");
-            return ok(userData);
-        }
-        catch (Exception e){
-            return internalServerError();
-        }
-    }
+	public static Result retrieveUser(final String token) {
+		try {
+			final User user = new User();
+			final String userData = user.retrieveUser(token);
+			response().setContentType("application/json");
+			return ok(userData);
+		} catch (final Exception e) {
+			return internalServerError();
+		}
+	}
 
-    public static Result retrieveAllUser(){
-        try{
-            User user = new User();
-            String userData = user.retrieveAllUser();
-            response().setContentType("application/json");
-            return ok(userData);
-        }
-        catch (Exception e){
-            return internalServerError();
-        }
-    }
+	public static Result getToken(final String objID) {
+
+		try {
+			final String tkn = CubrikComponent.buildObjToken(objID);
+			return ok(tkn);
+		} catch (final Exception e) {
+			return internalServerError();
+		}
+
+	}
+
+	public static Result getCosObj(final String objID, final String userId) {
+
+		try {
+			final User user = new User();
+			final String userData = user.retrieveUserCOS(userId);
+			final List<String> items = Arrays.asList(userData
+					.split("\\s*,\\s*"));
+			final InputStream obj = CubrikComponent.readObject(items.get(0)
+					,
+					items.get(1), objID);
+			if(obj==null){
+				return unauthorized();
+			}else{
+				return ok(obj).as("image/jpeg");}
+		} catch (final Exception e) {
+			return internalServerError();
+		}
+
+	}
+
+	public static Result retrieveAllUser() {
+		try {
+			final User user = new User();
+			final String userData = user.retrieveAllUser();
+			response().setContentType("application/json");
+			return ok(userData);
+		} catch (final Exception e) {
+			return internalServerError();
+		}
+	}
 
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result profile() {
 		final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        return ok(profile.render(localUser, otherUserInfo));
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		return ok(profile.render(localUser, otherUserInfo));
 	}
 
 	public static Result login() {
 		return ok(login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM));
 	}
-
 
 	public static Result doLogin() {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
@@ -115,22 +149,16 @@ public class Application extends Controller {
 		}
 	}
 
-
-
-
 	public static Result signup() {
 		return ok(signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
 	}
-
 
 	public static Result jsRoutes() {
 		return ok(
 				Routes.javascriptRouter("jsRoutes",
 						controllers.routes.javascript.Signup.forgotPassword()))
-				.as("text/javascript");
+						.as("text/javascript");
 	}
-
-
 
 	public static Result doSignup() {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
@@ -147,15 +175,13 @@ public class Application extends Controller {
 		}
 	}
 
-    public static Result testAuth(){
+	public static Result testAuth() {
 
-        CubrikComponent test = new CubrikComponent();
-        test.testAuth();
+		final CubrikComponent test = new CubrikComponent();
+		test.testAuth();
 
-        return ok();
-    }
-
-
+		return ok();
+	}
 
 	public static String formatTimestamp(final long t) {
 		return new SimpleDateFormat("yyyy-dd-MM HH:mm:ss").format(new Date(t));

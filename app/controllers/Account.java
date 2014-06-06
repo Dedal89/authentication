@@ -1,14 +1,11 @@
 package controllers;
 
+import static play.data.Form.form;
+
+import java.util.Map;
+
 import models.OtherUserInfo;
 import models.User;
-import be.objectify.deadbolt.java.actions.Restrict;
-import be.objectify.deadbolt.java.actions.Group;
-import be.objectify.deadbolt.java.actions.SubjectPresent;
-
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUser;
-
 import play.data.Form;
 import play.data.format.Formats.NonEmpty;
 import play.data.validation.Constraints.MinLength;
@@ -19,14 +16,18 @@ import play.mvc.Http;
 import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthUser;
-import views.html.account.*;
-import views.html.profile;
-import views.html.profileFashion;
-import views.html.profileHistoGraph;
+import views.html.account.ask_link;
+import views.html.account.ask_merge;
+import views.html.account.link;
+import views.html.account.name_change;
+import views.html.account.password_change;
+import views.html.account.unverified;
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 
-import java.util.Map;
-
-import static play.data.Form.form;
+import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.user.AuthUser;
 
 public class Account extends Controller {
 
@@ -40,7 +41,7 @@ public class Account extends Controller {
 			return accept;
 		}
 
-		public void setAccept(Boolean accept) {
+		public void setAccept(final Boolean accept) {
 			this.accept = accept;
 		}
 
@@ -59,7 +60,7 @@ public class Account extends Controller {
 			return password;
 		}
 
-		public void setPassword(String password) {
+		public void setPassword(final String password) {
 			this.password = password;
 		}
 
@@ -67,7 +68,7 @@ public class Account extends Controller {
 			return repeatPassword;
 		}
 
-		public void setRepeatPassword(String repeatPassword) {
+		public void setRepeatPassword(final String repeatPassword) {
 			this.repeatPassword = repeatPassword;
 		}
 
@@ -80,150 +81,152 @@ public class Account extends Controller {
 		}
 	}
 
-    public static class NicknameChange{
-        @Required
-        public String nickname;
+
+
+	public static class NicknameChange{
+		@Required
+		public String nickname;
 
 
 
-        public String getNickname(){
-            return nickname;
-        }
-        public void setNickname(String name){
-            this.nickname = name;
-        }
+		public String getNickname(){
+			return nickname;
+		}
+		public void setNickname(final String name){
+			this.nickname = name;
+		}
 
-    }
-    public static User getLocalUser(final Http.Session session) {
-        final AuthUser currentAuthUser = PlayAuthenticate.getUser(session);
-        final User localUser = User.findByAuthUserIdentity(currentAuthUser);
-        return localUser;
-    }
+	}
+	public static User getLocalUser(final Http.Session session) {
+		final AuthUser currentAuthUser = PlayAuthenticate.getUser(session);
+		final User localUser = User.findByAuthUserIdentity(currentAuthUser);
+		return localUser;
+	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyJobPosition() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String jobPosition = values.get("jobPosition")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setJobPosition(jobPosition);
-
-
-            return redirect(routes.Application.restricted());
-
-    }
-
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyMainInterests() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String mainInterests = values.get("mainInterests")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setMainInterests(mainInterests);
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyJobPosition() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String jobPosition = values.get("jobPosition")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setJobPosition(jobPosition);
 
 
-        return redirect(routes.Application.restricted());
+		return redirect(routes.Application.restricted());
 
-    }
+	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyAreaOfSpecialization() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String areaOfSpecialization = values.get("areaOfSpecialization")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setAreaOfSpecialization(areaOfSpecialization);
-
-
-        return redirect(routes.Application.restricted());
-
-    }
-
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyYourLinkedin() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String yourLinkedin = values.get("yourLinkedin")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setYourLinkedin(yourLinkedin);
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyMainInterests() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String mainInterests = values.get("mainInterests")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setMainInterests(mainInterests);
 
 
-        return redirect(routes.Application.restricted());
+		return redirect(routes.Application.restricted());
 
-    }
+	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyYourResearcherGate() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String yourResearcherGate = values.get("yourResearcherGate")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setYourResearcherGate(yourResearcherGate);
-
-
-        return redirect(routes.Application.restricted());
-
-    }
-
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyYourHomepage() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String yourHomepage = values.get("yourHomepage")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setYourHomepage(yourHomepage);
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyAreaOfSpecialization() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String areaOfSpecialization = values.get("areaOfSpecialization")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setAreaOfSpecialization(areaOfSpecialization);
 
 
-        return redirect(routes.Application.restricted());
+		return redirect(routes.Application.restricted());
 
-    }
+	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyCompanyHomepage() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String companyHomepage = values.get("companyHomepage")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setCompanyHomepage(companyHomepage);
-
-
-        return redirect(routes.Application.restricted());
-
-    }
-
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result modifyAbout() {
-        final User localUser = getLocalUser(session());
-        OtherUserInfo otherUserInfo = new OtherUserInfo();
-        final Map<String, String[]> values = request().body()
-                .asFormUrlEncoded();
-        String about = values.get("about")[0];
-        otherUserInfo.loadInfo(localUser.getIdentifier());
-        otherUserInfo.setAbout(about);
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyYourLinkedin() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String yourLinkedin = values.get("yourLinkedin")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setYourLinkedin(yourLinkedin);
 
 
-        return redirect(routes.Application.restricted());
+		return redirect(routes.Application.restricted());
 
-    }
+	}
+
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyYourResearcherGate() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String yourResearcherGate = values.get("yourResearcherGate")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setYourResearcherGate(yourResearcherGate);
+
+
+		return redirect(routes.Application.restricted());
+
+	}
+
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyYourHomepage() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String yourHomepage = values.get("yourHomepage")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setYourHomepage(yourHomepage);
+
+
+		return redirect(routes.Application.restricted());
+
+	}
+
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyCompanyHomepage() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String companyHomepage = values.get("companyHomepage")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setCompanyHomepage(companyHomepage);
+
+
+		return redirect(routes.Application.restricted());
+
+	}
+
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result modifyAbout() {
+		final User localUser = getLocalUser(session());
+		final OtherUserInfo otherUserInfo = new OtherUserInfo();
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		final String about = values.get("about")[0];
+		otherUserInfo.loadInfo(localUser.getIdentifier());
+		otherUserInfo.setAbout(about);
+
+
+		return redirect(routes.Application.restricted());
+
+	}
 
 
 	private static final Form<Accept> ACCEPT_FORM = form(Accept.class);
 	private static final Form<Account.PasswordChange> PASSWORD_CHANGE_FORM = form(Account.PasswordChange.class);
-    private static final Form<NicknameChange> NICKNAME_CHANGE_FORM = form(Account.NicknameChange.class);
+	private static final Form<NicknameChange> NICKNAME_CHANGE_FORM = form(Account.NicknameChange.class);
 
 	@SubjectPresent
 	public static Result link() {
@@ -244,7 +247,7 @@ public class Account extends Controller {
 					"playauthenticate.verify_email.message.instructions_sent",
 					user.email));
 			MyUsernamePasswordAuthProvider.getProvider()
-					.sendVerifyEmailMailingAfterSignup(user, ctx());
+			.sendVerifyEmailMailingAfterSignup(user, ctx());
 		} else {
 			flash(Application.FLASH_MESSAGE_KEY, Messages.get(
 					"playauthenticate.verify_email.error.set_email_first",
@@ -284,43 +287,43 @@ public class Account extends Controller {
 		}
 	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result changeNickname(){
-        com.feth.play.module.pa.controllers.Authenticate.noCache(response());
-        final User u= Application.getLocalUser(session());
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result changeNickname(){
+		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
+		final User u= Application.getLocalUser(session());
 
-        if (!u.emailValidated) {
-            return ok(unverified.render());
-        } else {
-            return ok(name_change.render(NICKNAME_CHANGE_FORM));
-        }
+		if (!u.emailValidated) {
+			return ok(unverified.render());
+		} else {
+			return ok(name_change.render(NICKNAME_CHANGE_FORM));
+		}
 
-    }
+	}
 
-    @Restrict(@Group(Application.USER_ROLE))
-    public static Result doChangeNickname() throws Exception{
-        com.feth.play.module.pa.controllers.Authenticate.noCache(response());
-        final Form<NicknameChange> filledForm = NICKNAME_CHANGE_FORM.bindFromRequest();
-        if (filledForm.hasErrors()) {
-            // User did not select whether to link or not link
-            return badRequest(name_change.render(filledForm));
-        } else {
-            final User user = Application.getLocalUser(session());
-            final String newname = filledForm.get().nickname;
-            user.changeNickname(new MyUsernamePasswordAuthUser("12345"),newname);
-            if(newname.equals(user.name)){
-                flash(Application.FLASH_MESSAGE_KEY,
-                        Messages.get("playauthenticate.change_name.temporary"));
+	@Restrict(@Group(Application.USER_ROLE))
+	public static Result doChangeNickname() throws Exception{
+		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
+		final Form<NicknameChange> filledForm = NICKNAME_CHANGE_FORM.bindFromRequest();
+		if (filledForm.hasErrors()) {
+			// User did not select whether to link or not link
+			return badRequest(name_change.render(filledForm));
+		} else {
+			final User user = Application.getLocalUser(session());
+			final String newname = filledForm.get().nickname;
+			user.changeNickname(new MyUsernamePasswordAuthUser("12345"),newname);
+			if(newname.equals(user.name)){
+				flash(Application.FLASH_MESSAGE_KEY,
+						Messages.get("playauthenticate.change_name.temporary"));
 
-            }
-            else{
-                flash(Application.FLASH_MESSAGE_KEY,
-                        Messages.get("playauthenticate.change_name.success"));
-            }
+			}
+			else{
+				flash(Application.FLASH_MESSAGE_KEY,
+						Messages.get("playauthenticate.change_name.success"));
+			}
 
-            return redirect(routes.Application.profile());
-        }
-    }
+			return redirect(routes.Application.profile());
+		}
+	}
 
 
 	@SubjectPresent
